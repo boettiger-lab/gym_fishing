@@ -24,9 +24,9 @@ class FishingEnv(gym.Env):
         self.harvest = 0
         self.reward = 0
         self.done = 0
-        self.eta = 1e-1
-        self.action_groups = 4
-        self.action_space = list(map(lambda x: x / 1e5, list(np.linspace(0, 10**5, self.action_groups))))
+        self.r = 0.1
+        self.eta = 1e-2
+        self.action_space = list(map(lambda x: x / 1e4, list(range(0, 11000, 1000)) ))
     
     def harvest_draw(self, quota):
         """
@@ -39,17 +39,17 @@ class FishingEnv(gym.Env):
         Select a value for population to grow or decrease at each time step.
         """
         self.fish_population -= self.harvest
-        self.fish_population = max(0, floor(self.fish_population + self.fish_population \
+        self.fish_population = max(0, floor(self.fish_population + self.r*self.fish_population \
                                 * (1 - self.fish_population / self.K) \
                                 + self.fish_population * self.eta * np.random.normal(0,1)))
         
     
     def step(self, action):
-        action = floor(1e5 / 2 * action)
+        action = floor(1e4 * action)
         assert action % 1 == 0 and action >= 0, "%r (%s) invalid"%(action, type(action))
         
-        # if self.fish_population == 0:
-        #     print("Fish population has gone extinct")
+        if self.fish_population == 0:
+            return self.fish_population, self.reward, 1, {}
         self.harvest_draw(action)
         self.population_draw()
         self.reward += self.harvest / self.K
@@ -68,8 +68,9 @@ class FishingEnv(gym.Env):
         self.years_passed = 0
         return self.fish_population, self.reward, self.done, {}
     
-    def reset(self):
-        self.fish_population = 1e5
+    
+    def reset(self, level = 1e5):
+        self.fish_population = level
         self.reward = 0
         self.done = 0
         self.years_passed = 0

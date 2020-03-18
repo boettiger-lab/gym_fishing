@@ -1,0 +1,1 @@
+best_performing_model_2.pth -> 1000 wide single neural net, batch 100, epsilon decay 1e4, target 100, number of episodes 1000, memory of 10000, with softmax; all else defaults
