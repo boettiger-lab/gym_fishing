@@ -10,9 +10,9 @@ class FishingEnv(gym.Env):
     def __init__(self):
         self.viewer = None
         self.boat_position = [0, 0]
-        self.fish_population = 1e5
+        self.fish_population = np.array([1e5])
         self.K = 1e5
-        self.state = [self.boat_position, self.fish_population]
+        #self.state = [self.boat_position, self.fish_population]
         self.years_passed = 0
         self.total_harvest = 0
         self.screen_width = 1200
@@ -23,7 +23,7 @@ class FishingEnv(gym.Env):
         self.dockheight = 40
         self.harvest = 0
         self.reward = 0
-        self.done = 0
+        self.done = False
         self.r = 0.1
         self.eta = 1e-2
         self.action_space = list(map(lambda x: x / 1e4, list(range(0, 11000, 1000)) ))
@@ -39,9 +39,10 @@ class FishingEnv(gym.Env):
         Select a value for population to grow or decrease at each time step.
         """
         self.fish_population -= self.harvest
-        self.fish_population = max(0, floor(self.fish_population + self.r*self.fish_population \
+        self.fish_population = max(0, floor(self.fish_population + self.r * self.fish_population \
                                 * (1 - self.fish_population / self.K) \
                                 + self.fish_population * self.eta * np.random.normal(0,1)))
+        self.fish_population = np.array([self.fish_population])
         
     
     def step(self, action):
@@ -49,32 +50,33 @@ class FishingEnv(gym.Env):
         assert action % 1 == 0 and action >= 0, "%r (%s) invalid"%(action, type(action))
         
         if self.fish_population == 0:
-            return self.fish_population, self.reward, 1, {}
+            return self.fish_population, self.reward, True, {}
         self.harvest_draw(action)
         self.population_draw()
         self.reward += self.harvest / self.K
-        
+        if self.fish_population < 2e4:
+            self.reward -= 10
         self.years_passed += 1
         if self.years_passed == 100:
-            self.done = 1
+            self.done = True
         
         return self.fish_population, self.reward, self.done, {}
             
         
     def random_reset(self):
-        self.fish_population = np.random.randint(1, 10**5)
+        self.fish_population = int(np.random.randint(1, 10**5))
         self.reward = 0
-        self.done = 0
+        self.done = False
         self.years_passed = 0
-        return self.fish_population, self.reward, self.done, {}
+        return np.array([self.fish_population]), self.reward, self.done, {}
     
     
     def reset(self, level = 1e5):
-        self.fish_population = level
+        self.fish_population = int(level)
         self.reward = 0
-        self.done = 0
+        self.done = False
         self.years_passed = 0
-        return self.fish_population, self.reward, self.done, {}
+        return np.array([self.fish_population]), self.reward, self.done, {}
   
     def render(self, mode='human'):
 

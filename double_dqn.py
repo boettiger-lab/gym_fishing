@@ -82,11 +82,14 @@ class DQN(nn.Module):
     def __init__(self, input_size, hidden_size, num_quotas):
         super(DQN, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
-        self.fc2 = nn.Linear(hidden_size, num_quotas)
+        self.fc2 = nn.Linear(hidden_size, hidden_size)
+        self.fc3 = nn.Linear(hidden_size, num_quotas)
     def forward(self, x):
         out = self.fc1(x)
         out = F.leaky_relu(out)
         out = self.fc2(out)
+        out = F.leaky_relu(out)
+        out = self.fc3(out)
         
         return out
 
@@ -97,7 +100,7 @@ target_net = DQN(1, LAYER_WIDTH, N_ACTIONS).to(device).requires_grad_(requires_g
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
-optimizer = optim.SGD(policy_net.parameters(), lr=0.00001)
+optimizer = optim.Adam(policy_net.parameters(), lr=0.00001)
 memory = ReplayMemory(MEMORY_LENGTH)
 
 
