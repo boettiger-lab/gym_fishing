@@ -28,7 +28,9 @@ class FishingEnv(gym.Env):
         """
         Select a value to harvest at each time step.
         """
-        self.harvest = min(self.fish_population, quota)
+        
+        ## index (fish.population[0]) to avoid promoting float to array
+        self.harvest = min(self.fish_population[0], quota)
         self.fish_population = max(self.fish_population - self.harvest, 0.0)
         return self.harvest
     
