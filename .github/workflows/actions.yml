@@ -1,4 +1,4 @@
-name: Install
+name: Install & Train
 
 on: [push]
 
@@ -16,4 +16,6 @@ jobs:
     - name: Install fisheries gym environment
       run: |
         python setup.py install
+    - name: Train and test
+      run: python fisheries.py
 
