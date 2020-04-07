@@ -17,5 +17,5 @@ jobs:
       run: |
         python setup.py install
     - name: Train and test
-      run: python fisheries.py
+      run: python fishing.py
 
