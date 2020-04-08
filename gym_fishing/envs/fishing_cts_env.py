@@ -7,7 +7,7 @@ from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
 
-class FishingEnv(gym.Env):
+class FishingCtsEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
@@ -21,7 +21,7 @@ class FishingEnv(gym.Env):
 
         self.harvest = (self.r * self.K / 4.0) / 2.0
         
-        self.action_space = spaces.Discrete(3)
+        self.action_space = spaces.Box(np.array([0]), np.array([2 * self.K]), dtype = np.float)
         self.observation_space = spaces.Box(np.array([0]), np.array([2 * self.K]), dtype = np.float)
         
     def harvest_draw(self, quota):
@@ -48,17 +48,14 @@ class FishingEnv(gym.Env):
     
     def step(self, action):
       
-        assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
+        #assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
+        action = np.clip(action, 0, 2 * self.K)[0]
         
-        if action == 0:
-          self.harvest = self.harvest
-        elif action == 1:
-          self.harvest = 1.2 * self.harvest
-        else:
-          self.harvest = 0.8 * self.harvest
-          
-
-        self.harvest_draw(self.harvest)
+        
+        harvest = action
+        self.harvest = harvest
+        
+        self.harvest_draw(harvest)
         self.population_draw()
         
         #self.reward += self.price * self.harvest
