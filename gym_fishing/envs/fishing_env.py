@@ -6,6 +6,8 @@ import gym
 from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
+from csv import writer
+
 
 class FishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -95,8 +97,12 @@ class FishingEnv(gym.Env):
   
   
     def render(self, mode='human'):
-        pass
+      row_contents = [self.years_passed, self.fish_population[0], self.harvest]
+      with open("fishing.csv", 'a+', newline='') as write_obj:
+            csv_writer = writer(write_obj)
+            csv_writer.writerow(row_contents)
   
+
   
     def close(self):
         pass
