@@ -18,7 +18,11 @@ class FishingEnv(gym.Env):
         self.r = 0.1
         self.price = 1.0
         self.sigma = 0.1
+        self.gamma = 0.99
+        
+        # for reporting purposes only
         self.reward = 0.0
+        self.action = 0
         self.years_passed = 0
 
         self.harvest = (self.r * self.K / 4.0) / 2.0
@@ -65,6 +69,8 @@ class FishingEnv(gym.Env):
         
         reward = max(self.price * self.harvest, 0.0)
         
+        self.reward += reward * self.gamma ** self.years_passed
+        
         self.years_passed += 1
         done = bool(self.years_passed >= 1000)
 
@@ -97,7 +103,7 @@ class FishingEnv(gym.Env):
   
   
     def render(self, mode='human'):
-      row_contents = [self.years_passed, self.fish_population[0], self.harvest]
+      row_contents = [self.years_passed, self.fish_population[0], self.harvest, self.action, self.reward]
       with open("fishing.csv", 'a+', newline='') as write_obj:
             csv_writer = writer(write_obj)
             csv_writer.writerow(row_contents)
