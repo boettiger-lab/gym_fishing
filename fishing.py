@@ -16,14 +16,17 @@ ENV_NAME = 'fishing-v0'
 
 
 # Get the environment and extract the number of actions.
-env = gym.make(ENV_NAME)
+# n_actions == 3 means: 
+#   0 = same harvest
+#   1 = increase harvest(by 20%)
+#   2 = decrease harvest (by 20%)
+#
+# n_actions > 3 --> action = quota
+gamma = 0.99
+env = gym.make(ENV_NAME, r = 0.1, K = 1.0, price = 1.0, sigma = 0.01, 
+               gamma = gamma,
+               n_actions = 3 )
 
-env.reset(init_state = 0.75,
-          r = 0.1,
-          K = 1.0,
-          price = 1.0,
-          sigma = 0.01)
-          
 #env.step(0)
 np.random.seed(123)
 env.seed(123)
@@ -49,20 +52,21 @@ policy = BoltzmannQPolicy()
 dqn = DQNAgent(model=model, 
                nb_actions=nb_actions, 
                memory=memory, 
-               nb_steps_warmup=100,
+               nb_steps_warmup=10000,
                target_model_update=1e-2, 
-               policy=policy)
+               policy=policy,
+               gamma = gamma)
 
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
-dqn.fit(env, nb_steps=150000, visualize=False, verbose=2)
+dqn.fit(env, nb_steps=200000, visualize=False, verbose=2)
 
 # After training is done, we save the final weights.
 # dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite=True)
 
 # Finally, evaluate our algorithm for 5 episodes.
-dqn.test(env, nb_episodes=5, visualize=True)
+dqn.test(env, nb_episodes=6, visualize=True)
 

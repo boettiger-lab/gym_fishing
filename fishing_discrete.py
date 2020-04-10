@@ -55,10 +55,10 @@ policy = BoltzmannQPolicy()
 dqn = DQNAgent(model=model, 
                nb_actions=nb_actions, 
                memory=memory, 
-               nb_steps_warmup=1000,
+               nb_steps_warmup=10000,
                target_model_update=1e-2, 
                policy=policy,
-               gamma = 0.999)
+               gamma = 0.99)
 
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
