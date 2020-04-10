@@ -20,7 +20,8 @@ class FishingEnv(gym.Env):
                  gamma = 0.99,
                  init_state = 0.75,
                  init_harvest = 0.0125,
-                 n_actions = 3
+                 n_actions = 3,
+                 file = "fishing.csv"
                  ):
         ## Action and state           
         self.fish_population = np.array([init_state])
@@ -34,6 +35,7 @@ class FishingEnv(gym.Env):
         self.gamma = gamma
         
         # for reporting purposes only
+        self.file = file
         self.reward = 0.0
         self.action = 0
         self.years_passed = 0
@@ -123,7 +125,7 @@ class FishingEnv(gym.Env):
                       self.harvest, 
                       self.action, 
                       self.reward]
-      with open("fishing.csv", 'a+', newline='') as write_obj:
+      with open(self.file, 'a+', newline='') as write_obj:
             csv_writer = writer(write_obj)
             csv_writer.writerow(row_contents)
   

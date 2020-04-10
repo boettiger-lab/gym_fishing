@@ -11,24 +11,26 @@ from rl.agents.dqn import DQNAgent
 from rl.policy import BoltzmannQPolicy
 from rl.memory import SequentialMemory
 
-
 import gym_fishing
-## 100 discrete action states:
-ENV_NAME = 'fishing-v2'
+ENV_NAME = 'fishing-v0'
 
 
 # Get the environment and extract the number of actions.
-env = gym.make(ENV_NAME)
+# n_actions == 3 means: 
+#   0 = same harvest
+#   1 = increase harvest(by 20%)
+#   2 = decrease harvest (by 20%)
+#
+# n_actions > 3 --> action = quota
+gamma = 0.99
+env = gym.make(ENV_NAME, r = 0.1, K = 1.0, price = 1.0, sigma = 0.01, 
+               gamma = gamma,
+               n_actions = 100,
+               file = "fishing-100.csv")
 
-env.reset(init_state = 0.75,
-          r = 0.1,
-          K = 1.0,
-          price = 1.0,
-          sigma = 0.01)
-          
 #env.step(0)
-np.random.seed(123)
-env.seed(123)
+np.random.seed(12345)
+env.seed(12345)
 nb_actions = env.action_space.n
 
 # Next, we build a very simple model.
@@ -48,17 +50,13 @@ print(model.summary())
 # even the metrics!
 memory = SequentialMemory(limit=50000, window_length=1)
 policy = BoltzmannQPolicy()
-
-# higher batch size seems to harm performance 
-# is gamma the discount factor? -- seems to be
-
 dqn = DQNAgent(model=model, 
                nb_actions=nb_actions, 
                memory=memory, 
                nb_steps_warmup=10000,
                target_model_update=1e-2, 
                policy=policy,
-               gamma = 0.99)
+               gamma = gamma)
 
 dqn.compile(Adam(lr=1e-3), metrics=['mae'])
 
@@ -71,5 +69,5 @@ dqn.fit(env, nb_steps=100000, visualize=False, verbose=2)
 # dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite=True)
 
 # Finally, evaluate our algorithm for 5 episodes.
-dqn.test(env, nb_episodes=5, visualize=True)
+dqn.test(env, nb_episodes=6, visualize=True)
 
