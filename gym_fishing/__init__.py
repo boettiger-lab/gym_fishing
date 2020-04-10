@@ -11,9 +11,3 @@ register(
     entry_point='gym_fishing.envs:FishingCtsEnv',
 )
 
-
-register(
-    id='fishing-v2',
-    entry_point='gym_fishing.envs:FishingDiscreteEnv',
-)
-
