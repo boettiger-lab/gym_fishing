@@ -29,8 +29,8 @@ env = gym.make(ENV_NAME, r = 0.1, K = 1.0, price = 1.0, sigma = 0.01,
                file = "fishing-100.csv")
 
 #env.step(0)
-np.random.seed(12345)
-env.seed(12345)
+np.random.seed(123)
+env.seed(123)
 nb_actions = env.action_space.n
 
 # Next, we build a very simple model.
@@ -53,17 +53,17 @@ policy = BoltzmannQPolicy()
 dqn = DQNAgent(model=model, 
                nb_actions=nb_actions, 
                memory=memory, 
-               nb_steps_warmup=10000,
+               nb_steps_warmup=50000,
                target_model_update=1e-2, 
                policy=policy,
                gamma = gamma)
 
-dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+dqn.compile(Adam(lr=1e-4), metrics=['mae'])
 
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using
 # Ctrl + C.
-dqn.fit(env, nb_steps=100000, visualize=False, verbose=2)
+dqn.fit(env, nb_steps=200000, visualize=False, verbose=2)
 
 # After training is done, we save the final weights.
 # dqn.save_weights('dqn_{}_weights.h5f'.format(ENV_NAME), overwrite=True)

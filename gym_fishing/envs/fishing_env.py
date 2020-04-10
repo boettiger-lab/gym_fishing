@@ -36,7 +36,6 @@ class FishingEnv(gym.Env):
         
         # for reporting purposes only
         self.file = file
-        self.reward = 0.0
         self.action = 0
         self.years_passed = 0
         
@@ -96,9 +95,9 @@ class FishingEnv(gym.Env):
         
         reward = max(self.price * self.harvest, 0.0)
         
-        
-        self.reward += reward * self.gamma ** self.years_passed
-        
+        ## recording purposes only
+        self.action = action
+
         self.years_passed += 1
         done = bool(self.years_passed >= 1000)
 
@@ -114,7 +113,6 @@ class FishingEnv(gym.Env):
         self.fish_population = np.array([self.init_state])
         
         self.harvest = self.r * self.K / 4.0 / 2.0
-        self.reward = 0.0
         self.years_passed = 0
         return self.fish_population
   
@@ -123,8 +121,7 @@ class FishingEnv(gym.Env):
       row_contents = [self.years_passed, 
                       self.fish_population[0], 
                       self.harvest, 
-                      self.action, 
-                      self.reward]
+                      self.action]
       with open(self.file, 'a+', newline='') as write_obj:
             csv_writer = writer(write_obj)
             csv_writer.writerow(row_contents)
