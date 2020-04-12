@@ -10,3 +10,4 @@ register(
     id='fishing-v1',
     entry_point='gym_fishing.envs:FishingCtsEnv',
 )
+

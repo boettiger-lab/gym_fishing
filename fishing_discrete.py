@@ -25,7 +25,8 @@ ENV_NAME = 'fishing-v0'
 gamma = 0.99
 env = gym.make(ENV_NAME, r = 0.1, K = 1.0, price = 1.0, sigma = 0.01, 
                gamma = gamma,
-               n_actions = 3 )
+               n_actions = 100,
+               file = "fishing-100.csv")
 
 #env.step(0)
 np.random.seed(123)
@@ -52,12 +53,12 @@ policy = BoltzmannQPolicy()
 dqn = DQNAgent(model=model, 
                nb_actions=nb_actions, 
                memory=memory, 
-               nb_steps_warmup=10000,
+               nb_steps_warmup=50000,
                target_model_update=1e-2, 
                policy=policy,
                gamma = gamma)
 
-dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+dqn.compile(Adam(lr=1e-4), metrics=['mae'])
 
 # Okay, now it's time to learn something! We visualize the training here for show, but this
 # slows down training quite a lot. You can always safely abort the training prematurely using
