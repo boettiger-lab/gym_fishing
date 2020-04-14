@@ -1,3 +1,9 @@
-*.pth
 .Rproj.user
+*.Rproj
+.Renviron
+.Rhistory
+*.pth
 *.cpython-36.pyc
+dist/
+build/
+*.egg-info
