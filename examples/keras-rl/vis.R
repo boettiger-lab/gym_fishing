@@ -6,7 +6,7 @@ library(reticulate)
 reticulate::source_python("fishing_discrete.py")
 
 library(tidyverse)
-fishing <- read_csv("fishing-100.csv", 
+fishing <- read_csv("fishing.csv", 
                     col_names = c("time", "state", "harvest", "action"))
 
 d <- max(fishing$time)
