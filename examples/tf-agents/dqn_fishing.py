@@ -1,7 +1,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-##import gym_fishing
+import gym_fishing
 import base64
 import imageio
 import IPython
@@ -30,7 +30,7 @@ from tf_agents.utils import common
 
 tf.compat.v1.enable_v2_behavior()
 
-### tf.keras.backend.set_floatx('float64')
+tf.keras.backend.set_floatx('float64')
 # Set up a virtual display for rendering OpenAI gym environments.
 #display = pyvirtualdisplay.Display(visible=0, size=(1400, 900)).start()
 
@@ -66,7 +66,8 @@ eval_interval = 1000  # @param {type:"integer"}
 # In[ ]:
 
 
-env_name = 'CartPole-v0'
+#env_name = 'CartPole-v0'
+env_name = "fishing-v0"
 env = suite_gym.load(env_name)
 
 # You can render this environment to see how it looks. A free-swinging pole is attached to a cart.  The goal is to move the cart right or left in order to keep the pole pointing up.
@@ -412,13 +413,13 @@ for _ in range(num_iterations):
     collect_step(train_env, agent.collect_policy, replay_buffer)
 
   # Sample a batch of data from the buffer and update the agent's network.
-  experience, unused_info = next(iterator)
-  train_loss = agent.train(experience).loss
+  #experience, unused_info = next(iterator)
+  #train_loss = agent.train(experience).loss
 
   step = agent.train_step_counter.numpy()
 
-  if step % log_interval == 0:
-    print('step = {0}: loss = {1}'.format(step, train_loss))
+  #if step % log_interval == 0:
+  #  print('step = {0}: loss = {1}'.format(step, train_loss))
 
   if step % eval_interval == 0:
     avg_return = compute_avg_return(eval_env, agent.policy, num_eval_episodes)

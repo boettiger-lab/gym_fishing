@@ -1,0 +1,7 @@
+gym==0.10.11
+imageio==2.4.0
+PILLOW
+pyglet==1.3.2
+pyvirtualdisplay
+tensorflow-probability
+tf-agents
