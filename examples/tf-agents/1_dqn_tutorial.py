@@ -1,5 +1,9 @@
 
+
 from __future__ import absolute_import, division, print_function
+
+#import os
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 ##import gym_fishing
 import base64
@@ -28,7 +32,7 @@ from tf_agents.utils import common
 # In[ ]:
 
 
-tf.compat.v1.enable_v2_behavior()
+#tf.compat.v1.enable_v2_behavior()
 
 ### tf.keras.backend.set_floatx('float64')
 # Set up a virtual display for rendering OpenAI gym environments.
@@ -218,8 +222,8 @@ collect_policy = agent.collect_policy
 # In[ ]:
 
 
-#random_policy = random_tf_policy.RandomTFPolicy(train_env.time_step_spec(),
-#                                                train_env.action_spec())
+random_policy = random_tf_policy.RandomTFPolicy(train_env.time_step_spec(),
+                                                train_env.action_spec())
 
 # To get an action from a policy, call the `policy.action(time_step)` method. The `time_step` contains the observation from the environment. This method returns a `PolicyStep`, which is a named tuple with three components:
 # 
@@ -241,7 +245,7 @@ time_step = example_environment.reset()
 # In[ ]:
 
 
-#random_policy.action(time_step)
+random_policy.action(time_step)
 
 # ## Metrics and Evaluation
 # 
@@ -280,7 +284,7 @@ def compute_avg_return(environment, policy, num_episodes=10):
 # In[ ]:
 
 
-#compute_avg_return(eval_env, random_policy, num_eval_episodes)
+compute_avg_return(eval_env, random_policy, num_eval_episodes)
 
 # ## Replay Buffer
 # 
@@ -330,7 +334,7 @@ def collect_data(env, policy, buffer, steps):
   for _ in range(steps):
     collect_step(env, policy, buffer)
 
-#collect_data(train_env, random_policy, replay_buffer, steps=100)
+collect_data(train_env, random_policy, replay_buffer, steps=100)
 
 # This loop is so common in RL, that we provide standard implementations. 
 # For more details see the drivers module.
@@ -343,7 +347,7 @@ def collect_data(env, policy, buffer, steps):
 
 # For the curious:
 # Uncomment to peel one of these off and inspect it.
-# iter(replay_buffer.as_dataset()).next()
+iter(replay_buffer.as_dataset()).next()
 
 # The agent needs access to the replay buffer. This is provided by creating an iterable `tf.data.Dataset` pipeline which will feed data to the agent.
 # 
@@ -379,7 +383,7 @@ print(iterator)
 # Compare this representation of replay data 
 # to the collection of individual trajectories shown earlier.
 
-# iterator.next()
+iterator.next()
 
 # ## Training the agent
 # 
