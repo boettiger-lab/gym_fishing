@@ -1,3 +1,6 @@
+---
+output: github_document
+---
 
 ## Introduction
 
@@ -14,7 +17,7 @@
 ```{r}
 library(reticulate)
 reticulate::use_virtualenv("~/.virtualenvs/tf2.0")
-reticulate::py_discover_config()
+#reticulate::py_discover_config()
 ```
 
 ```{python}
@@ -358,7 +361,7 @@ dataset = replay_buffer.as_dataset(
 dataset
 ```
 
-```{r}
+```{python}
 iterator = iter(dataset)
 
 print(iterator)
