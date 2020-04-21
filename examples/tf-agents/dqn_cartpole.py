@@ -2,8 +2,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-#import os
-#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 
 ##import gym_fishing
 import base64
@@ -21,6 +20,17 @@ from tf_agents.policies import random_tf_policy
 from tf_agents.replay_buffers import tf_uniform_replay_buffer
 from tf_agents.trajectories import trajectory
 from tf_agents.utils import common
+
+
+## Turn off GPU
+#import os
+#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+## Grow memory as needed instead of pre-allocating (e.g. allows concurrent usage)
+## (TF2 version.  See https://stackoverflow.com/a/59126638/258662)
+gpu_devices = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpu_devices[0], True)
+
 
 # In[ ]:
 

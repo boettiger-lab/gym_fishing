@@ -9,9 +9,9 @@ import numpy as np
 from csv import writer
 
 
-class FishingEnv(gym.Env):
+class AbstractFishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
-
+    
     def __init__(self, 
                  r = 0.1,
                  K = 1.0,
@@ -112,7 +112,7 @@ class FishingEnv(gym.Env):
     def reset(self):
         self.fish_population = np.array([self.init_state])
         
-        self.harvest = self.r * self.K / 4.0 / 2.0
+        self.harvest = 0.1 * 1 / 4.0 / 2.0
         self.years_passed = 0
         return self.fish_population
   
@@ -130,3 +130,55 @@ class FishingEnv(gym.Env):
   
     def close(self):
         pass
+
+
+
+
+class FishingEnv(AbstractFishingEnv):
+    def __init__(self):
+        super(FishingEnv, self).__init__(self, 
+                                         n_actions = 3,
+                                         file = "fishing.csv")
+
+
+class FishingEnv100(AbstractFishingEnv):
+  def __init__(self, 
+               r = 0.1,
+               K = 1.0,
+               price = 1.0,
+               sigma = 0.05,
+               gamma = 0.99,
+               init_state = 0.75,
+               init_harvest = 0.0125,
+               n_actions = 100,
+               file = "fishing-100.csv"):
+                  ## Action and state           
+        self.fish_population = np.array([init_state])
+        self.harvest = init_harvest
+        
+        ## parameters
+        self.K = K
+        self.r = r
+        self.price = price
+        self.sigma = sigma
+        self.gamma = gamma
+        
+        # for reporting purposes only
+        self.file = file
+        self.action = 0
+        self.years_passed = 0
+        
+        
+        ## for reset
+        self.init_state = init_state
+        self.init_harvest = init_harvest
+        
+        ## Set the action space
+        self.n_actions = n_actions
+        self.action_space = spaces.Discrete(n_actions)
+        self.observation_space = spaces.Box(np.array([0]), 
+                                            np.array([2 * self.K]), 
+                                            dtype = np.float)
+       
+
+

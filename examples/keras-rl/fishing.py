@@ -23,9 +23,7 @@ ENV_NAME = 'fishing-v0'
 #
 # n_actions > 3 --> action = quota
 gamma = 0.99
-env = gym.make(ENV_NAME, r = 0.1, K = 1.0, price = 1.0, sigma = 0.01, 
-               gamma = gamma,
-               n_actions = 3 )
+env = gym.make(ENV_NAME)
 
 #env.step(0)
 np.random.seed(123)

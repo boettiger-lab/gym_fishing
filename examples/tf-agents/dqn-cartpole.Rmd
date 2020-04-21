@@ -51,6 +51,12 @@ from tf_agents.utils import common
 #import os
 #os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+## Grow memory as needed instead of pre-allocating (e.g. allows concurrent usage)
+## (TF2 version.  See https://stackoverflow.com/a/59126638/258662)
+gpu_devices = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpu_devices[0], True)
+
+
 tf.version.VERSION
 ```
 
@@ -336,7 +342,6 @@ This loop is so common in RL, that we provide standard implementations.
 For more details see the drivers module.
 <https://github.com/tensorflow/agents/blob/master/tf_agents/docs/python/tf_agents/drivers.md>
 The replay buffer is now a collection of Trajectories.
-```
 
 For the curious:
 Uncomment to peel one of these off and inspect it.
@@ -427,22 +432,29 @@ for _ in range(num_iterations):
 
 ## Visualization
 
+
+### Plots
+ 
+Use `matplotlib.pyplot` to chart how the policy improved during training.
+ 
+One iteration of `Cartpole-v0` consists of 200 time steps. The environment gives a reward of `+1` for each step the pole stays up, so the maximum return for one episode is 200. The charts shows the return increasing towards that maximum each time it is evaluated during training. (It may be a little unstable and not increase monotonically each time.)
+
+
 ```{python}
-# ### Plots
-# 
-# Use `matplotlib.pyplot` to chart how the policy improved during training.
-# 
-# One iteration of `Cartpole-v0` consists of 200 time steps. The environment gives a reward of `+1` for each step the pole stays up, so the maximum return for one episode is 200. The charts shows the return increasing towards that maximum each time it is evaluated during training. (It may be a little unstable and not increase monotonically each time.)
-
-# In[ ]:
-
-
+import matplotlib
+import matplotlib.pyplot as plt
 #@test {"skip": true}
 
-#iterations = range(0, num_iterations + 1, eval_interval)
-#plt.plot(iterations, returns)
-#plt.ylabel('Average Return')
-#plt.xlabel('Iterations')
-#plt.ylim(top=250)
+iterations = range(0, num_iterations + 1, eval_interval)
+plt.plot(iterations, returns)
+plt.ylabel('Average Return')
+plt.xlabel('Iterations')
+plt.ylim(top=250)
 
+plt.show()
 ```
+
+```{python}
+plt.savefig('cartpole-learn.png', bbox_inches='tight')
+```
+

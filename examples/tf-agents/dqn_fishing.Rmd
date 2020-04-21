@@ -53,24 +53,34 @@ from tf_agents.utils import common
 #import os
 #os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+
+## Grow memory as needed instead of pre-allocating (e.g. allows concurrent GPU usage)
+## (TF2 version.  See https://stackoverflow.com/a/59126638/258662)
+gpu_devices = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpu_devices[0], True)
+
 tf.version.VERSION
 ```
 
 
 ```{python}
 ## Hyperparameters
-num_iterations = 20000             # @param {type:"integer"}
-initial_collect_steps = 1000       # @param {type:"integer"} 
-collect_steps_per_iteration = 1    # @param {type:"integer"}
-replay_buffer_max_length = 100000  # @param {type:"integer"}
-batch_size = 64                    # @param {type:"integer"}
-learning_rate = 1e-3               # @param {type:"number"}
-log_interval = 200                 # @param {type:"integer"}
-num_eval_episodes = 10             # @param {type:"integer"}
-eval_interval = 1000               # @param {type:"integer"}
+num_iterations = 200000             # @param {type:"integer"}
+initial_collect_steps = 1000        # @param {type:"integer"} 
+collect_steps_per_iteration = 1     # @param {type:"integer"}
+replay_buffer_max_length = 1000000  # @param {type:"integer"}
+batch_size = 64                     # @param {type:"integer"}
+learning_rate = 1e-3                # @param {type:"number"}
+log_interval = 200                  # @param {type:"integer"}
+num_eval_episodes = 10              # @param {type:"integer"}
+eval_interval = 1000                # @param {type:"integer"}
+```
+
 
 ## Environment
-env_name = 'fishing-v0'
+
+```{python}
+env_name = 'fishing-v2'
 env = suite_gym.load(env_name)
 env.reset()
 ```
@@ -103,7 +113,7 @@ print(env.action_spec())
 ```
 
 
-In the `fishing-v0` environment:
+In the `fishing-v2` environment:
 
 -   `observation` is an array of 1 floating point number: current fish density
 -   `reward` is a scalar float value
@@ -389,7 +399,6 @@ Two things must happen during the training loop:
 -   use that data to train the agent's neural network(s)
  
 This example also periodicially evaluates the policy and prints the current score.
-The following will take ~5 minutes to run.
 
 ```{python}
 # (Optional) Optimize by wrapping some of the code in a graph using TF function.
@@ -427,14 +436,14 @@ for _ in range(num_iterations):
 
 ## Visualization
 
+### Plots
+ 
+Use `matplotlib.pyplot` to chart how the policy improved during training.
+ 
+One iteration of `fishing-v2` consists of 1000 time steps. MSY harvest is `rK/4` = `0.1 * 1 / 4`, so the maximum return for one episode is 25. 
+
+
 ```{python}
-# ### Plots
-# 
-# Use `matplotlib.pyplot` to chart how the policy improved during training.
-# 
-# One iteration of `Cartpole-v0` consists of 200 time steps. The environment gives a reward of `+1` for each step the pole stays up, so the maximum return for one episode is 200. The charts shows the return increasing towards that maximum each time it is evaluated during training. (It may be a little unstable and not increase monotonically each time.)
-
-
 import matplotlib
 import matplotlib.pyplot as plt
 #@test {"skip": true}
@@ -443,8 +452,11 @@ iterations = range(0, num_iterations + 1, eval_interval)
 plt.plot(iterations, returns)
 plt.ylabel('Average Return')
 plt.xlabel('Iterations')
-plt.ylim(top=250)
+plt.ylim(top=25)
 
 plt.show()
-#fig.savefig('foo.png', bbox_inches='tight')
+```
+
+```{python}
+plt.savefig('foo.png', bbox_inches='tight')
 ```
