@@ -1,11 +1,7 @@
 
-
 from __future__ import absolute_import, division, print_function
 
-#import os
-#os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
-##import gym_fishing
+import gym_fishing
 import base64
 import imageio
 import IPython
@@ -32,9 +28,9 @@ from tf_agents.utils import common
 # In[ ]:
 
 
-#tf.compat.v1.enable_v2_behavior()
+tf.compat.v1.enable_v2_behavior()
 
-### tf.keras.backend.set_floatx('float64')
+tf.keras.backend.set_floatx('float64')
 # Set up a virtual display for rendering OpenAI gym environments.
 #display = pyvirtualdisplay.Display(visible=0, size=(1400, 900)).start()
 
@@ -70,7 +66,8 @@ eval_interval = 1000  # @param {type:"integer"}
 # In[ ]:
 
 
-env_name = 'CartPole-v0'
+#env_name = 'CartPole-v0'
+env_name = "fishing-v0"
 env = suite_gym.load(env_name)
 
 # You can render this environment to see how it looks. A free-swinging pole is attached to a cart.  The goal is to move the cart right or left in order to keep the pole pointing up.
@@ -222,8 +219,8 @@ collect_policy = agent.collect_policy
 # In[ ]:
 
 
-random_policy = random_tf_policy.RandomTFPolicy(train_env.time_step_spec(),
-                                                train_env.action_spec())
+#random_policy = random_tf_policy.RandomTFPolicy(train_env.time_step_spec(),
+#                                                train_env.action_spec())
 
 # To get an action from a policy, call the `policy.action(time_step)` method. The `time_step` contains the observation from the environment. This method returns a `PolicyStep`, which is a named tuple with three components:
 # 
@@ -245,7 +242,7 @@ time_step = example_environment.reset()
 # In[ ]:
 
 
-random_policy.action(time_step)
+#random_policy.action(time_step)
 
 # ## Metrics and Evaluation
 # 
@@ -284,7 +281,7 @@ def compute_avg_return(environment, policy, num_episodes=10):
 # In[ ]:
 
 
-compute_avg_return(eval_env, random_policy, num_eval_episodes)
+#compute_avg_return(eval_env, random_policy, num_eval_episodes)
 
 # ## Replay Buffer
 # 
@@ -334,7 +331,7 @@ def collect_data(env, policy, buffer, steps):
   for _ in range(steps):
     collect_step(env, policy, buffer)
 
-collect_data(train_env, random_policy, replay_buffer, steps=100)
+#collect_data(train_env, random_policy, replay_buffer, steps=100)
 
 # This loop is so common in RL, that we provide standard implementations. 
 # For more details see the drivers module.
@@ -347,7 +344,7 @@ collect_data(train_env, random_policy, replay_buffer, steps=100)
 
 # For the curious:
 # Uncomment to peel one of these off and inspect it.
-iter(replay_buffer.as_dataset()).next()
+# iter(replay_buffer.as_dataset()).next()
 
 # The agent needs access to the replay buffer. This is provided by creating an iterable `tf.data.Dataset` pipeline which will feed data to the agent.
 # 
@@ -383,7 +380,7 @@ print(iterator)
 # Compare this representation of replay data 
 # to the collection of individual trajectories shown earlier.
 
-iterator.next()
+# iterator.next()
 
 # ## Training the agent
 # 
@@ -416,13 +413,13 @@ for _ in range(num_iterations):
     collect_step(train_env, agent.collect_policy, replay_buffer)
 
   # Sample a batch of data from the buffer and update the agent's network.
-  experience, unused_info = next(iterator)
-  train_loss = agent.train(experience).loss
+  #experience, unused_info = next(iterator)
+  #train_loss = agent.train(experience).loss
 
   step = agent.train_step_counter.numpy()
 
-  if step % log_interval == 0:
-    print('step = {0}: loss = {1}'.format(step, train_loss))
+  #if step % log_interval == 0:
+  #  print('step = {0}: loss = {1}'.format(step, train_loss))
 
   if step % eval_interval == 0:
     avg_return = compute_avg_return(eval_env, agent.policy, num_eval_episodes)

@@ -3,7 +3,8 @@
 .Renviron
 .Rhistory
 *.pth
-*.cpython-36.pyc
+*.cpython-*.pyc
+__pycache__
 dist/
 build/
 *.egg-info
