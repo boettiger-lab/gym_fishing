@@ -103,7 +103,7 @@ print(env.action_spec())
 ```
 
 
-In the Cartpole environment:
+In the `fishing-v0` environment:
 
 -   `observation` is an array of 1 floating point number: current fish density
 -   `reward` is a scalar float value
@@ -132,7 +132,7 @@ train_py_env = suite_gym.load(env_name)
 eval_py_env = suite_gym.load(env_name)
 ```
 
-The Cartpole environment, like most environments, is written in pure Python. 
+Our environment, like most environments, is written in pure Python. 
 This is converted to TensorFlow using the `TFPyEnvironment` wrapper.
  
 The original environment's API uses Numpy arrays. The `TFPyEnvironment` converts 
@@ -215,9 +215,9 @@ eval_policy = agent.policy
 collect_policy = agent.collect_policy
 ```
 
-# Policies can be created independently of agents. For example, 
-# use `tf_agents.policies.random_tf_policy` to create a policy 
-# which will randomly select an action for each `time_step`.
+Policies can be created independently of agents. For example, 
+use `tf_agents.policies.random_tf_policy` to create a policy 
+which will randomly select an action for each `time_step`.
 
 
 ```{python}
