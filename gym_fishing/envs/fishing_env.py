@@ -16,7 +16,7 @@ class AbstractFishingEnv(gym.Env):
                  r = 0.1,
                  K = 1.0,
                  price = 1.0,
-                 sigma = 0.05,
+                 sigma = 0.01,
                  gamma = 0.99,
                  init_state = 0.75,
                  init_harvest = 0.0125,
@@ -135,10 +135,8 @@ class AbstractFishingEnv(gym.Env):
 
 
 class FishingEnv(AbstractFishingEnv):
-    def __init__(self):
-        super(FishingEnv, self).__init__(self, 
-                                         n_actions = 3,
-                                         file = "fishing.csv")
+    def __init__(self, **kargs):
+        super(FishingEnv, self).__init__(n_actions = 3, **kargs)
 
 
 class FishingEnv100(AbstractFishingEnv):
