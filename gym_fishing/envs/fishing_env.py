@@ -49,7 +49,7 @@ class AbstractFishingEnv(gym.Env):
         self.action_space = spaces.Discrete(n_actions)
         self.observation_space = spaces.Box(np.array([0]), 
                                             np.array([2 * self.K]), 
-                                            dtype = np.float)
+                                            dtype = np.float32)
         
     def harvest_draw(self, quota):
         """
@@ -140,43 +140,6 @@ class FishingEnv(AbstractFishingEnv):
 
 
 class FishingEnv100(AbstractFishingEnv):
-  def __init__(self, 
-               r = 0.1,
-               K = 1.0,
-               price = 1.0,
-               sigma = 0.05,
-               gamma = 0.99,
-               init_state = 0.75,
-               init_harvest = 0.0125,
-               n_actions = 100,
-               file = "fishing-100.csv"):
-                  ## Action and state           
-        self.fish_population = np.array([init_state])
-        self.harvest = init_harvest
-        
-        ## parameters
-        self.K = K
-        self.r = r
-        self.price = price
-        self.sigma = sigma
-        self.gamma = gamma
-        
-        # for reporting purposes only
-        self.file = file
-        self.action = 0
-        self.years_passed = 0
-        
-        
-        ## for reset
-        self.init_state = init_state
-        self.init_harvest = init_harvest
-        
-        ## Set the action space
-        self.n_actions = n_actions
-        self.action_space = spaces.Discrete(n_actions)
-        self.observation_space = spaces.Box(np.array([0]), 
-                                            np.array([2 * self.K]), 
-                                            dtype = np.float)
-       
-
-
+    def __init__(self, **kargs):
+        super(FishingEnv100, self).__init__(n_actions = 100, **kargs)
+  
