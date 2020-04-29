@@ -16,7 +16,7 @@ output: github_document
 
 ```{r}
 library(reticulate)
-reticulate::use_virtualenv("~/.virtualenvs/tf2.0")
+reticulate::use_virtualenv("~/.virtualenvs/tf-agents")
 #reticulate::py_discover_config()
 ```
 
@@ -26,6 +26,7 @@ reticulate::use_virtualenv("~/.virtualenvs/tf2.0")
 from __future__ import absolute_import, division, print_function
 
 import gym_fishing
+import matplotlib.pyplot as plt
 
 import gym
 import base64
@@ -53,25 +54,36 @@ from tf_agents.utils import common
 #import os
 #os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+
+## Grow memory as needed instead of pre-allocating (e.g. allows concurrent GPU usage)
+## (TF2 version.  See https://stackoverflow.com/a/59126638/258662)
+gpu_devices = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpu_devices[0], True)
+
 tf.version.VERSION
 ```
 
 
 ```{python}
 ## Hyperparameters
-num_iterations = 20000             # @param {type:"integer"}
-initial_collect_steps = 1000       # @param {type:"integer"} 
-collect_steps_per_iteration = 1    # @param {type:"integer"}
-replay_buffer_max_length = 100000  # @param {type:"integer"}
-batch_size = 64                    # @param {type:"integer"}
-learning_rate = 1e-3               # @param {type:"number"}
-log_interval = 200                 # @param {type:"integer"}
-num_eval_episodes = 10             # @param {type:"integer"}
-eval_interval = 1000               # @param {type:"integer"}
+num_iterations = 200000             # @param {type:"integer"}
+initial_collect_steps = 1000        # @param {type:"integer"} 
+collect_steps_per_iteration = 1     # @param {type:"integer"}
+replay_buffer_max_length = 2000000  # @param {type:"integer"}
+batch_size = 64                     # @param {type:"integer"}
+learning_rate = 1e-3                # @param {type:"number"}
+log_interval = 500                  # @param {type:"integer"}
+num_eval_episodes = 100            # @param {type:"integer"}
+eval_interval = 1000                # @param {type:"integer"}
+discount = 0.99
+```
+
 
 ## Environment
+
+```{python}
 env_name = 'fishing-v0'
-env = suite_gym.load(env_name)
+env = suite_gym.load(env_name, discount = discount)
 env.reset()
 ```
 
@@ -86,9 +98,10 @@ types, and the ranges of allowed values. The `reward` attribute shows the
 same details for the reward.
 
 ```{python}
-print('Observation Spec:')
-print(env.time_step_spec().observation)
+env.time_step_spec().observation
+```
 
+```{python}
 print('Reward Spec:')
 print(env.time_step_spec().reward)
 ```
@@ -103,7 +116,7 @@ print(env.action_spec())
 ```
 
 
-In the Cartpole environment:
+In the `fishing-v0` environment:
 
 -   `observation` is an array of 1 floating point number: current fish density
 -   `reward` is a scalar float value
@@ -128,11 +141,11 @@ print(next_time_step)
 Usually two environments are instantiated: one for training and one for evaluation. 
 
 ```{python}
-train_py_env = suite_gym.load(env_name)
-eval_py_env = suite_gym.load(env_name)
+train_py_env = suite_gym.load(env_name, discount = discount)
+eval_py_env = suite_gym.load(env_name, discount = discount)
 ```
 
-The Cartpole environment, like most environments, is written in pure Python. 
+Our environment, like most environments, is written in pure Python. 
 This is converted to TensorFlow using the `TFPyEnvironment` wrapper.
  
 The original environment's API uses Numpy arrays. The `TFPyEnvironment` converts 
@@ -215,9 +228,9 @@ eval_policy = agent.policy
 collect_policy = agent.collect_policy
 ```
 
-# Policies can be created independently of agents. For example, 
-# use `tf_agents.policies.random_tf_policy` to create a policy 
-# which will randomly select an action for each `time_step`.
+Policies can be created independently of agents. For example, 
+use `tf_agents.policies.random_tf_policy` to create a policy 
+which will randomly select an action for each `time_step`.
 
 
 ```{python}
@@ -236,7 +249,7 @@ returns a `PolicyStep`, which is a named tuple with three components:
 
 ```{python}
 example_environment = tf_py_environment.TFPyEnvironment(
-    suite_gym.load(env_name))
+    suite_gym.load(env_name, discount = discount))
 
 time_step = example_environment.reset()
 random_policy.action(time_step)
@@ -255,7 +268,7 @@ environment, and a number of episodes.
 
 ```{python}
 #@test {"skip": true}
-def compute_avg_return(environment, policy, num_episodes=10):
+def compute_avg_return(environment, policy, num_episodes=100):
 
   total_return = 0.0
   for _ in range(num_episodes):
@@ -283,6 +296,45 @@ in the environment.
 compute_avg_return(eval_env, random_policy, num_eval_episodes)
 ```
 
+
+```{python}
+
+def simulate(environment, policy):
+  total_return = 0.0
+  time_step = environment.reset()
+  episode_return = 0.0
+
+  output = np.zeros(shape = (1000, 4))
+  for it in range(1000):
+    action_step = policy.action(time_step)
+    time_step = environment.step(action_step.action)
+    episode_return += time_step.reward
+    output[it] = (it, time_step.observation, action_step.action, episode_return)
+
+  return output
+```
+
+
+```{python}
+out = simulate(eval_env, random_policy)
+```
+
+```{python}
+plt.plot(out[:,1])
+plt.ylabel('state')
+plt.show()
+
+
+plt.plot(out[:,2])
+plt.ylabel('action')
+plt.show()
+
+plt.plot(out[:,3])
+plt.ylabel('reward')
+plt.show()
+```
+
+
 ## Replay Buffer
  
 The replay buffer keeps track of data collected from the environment.
@@ -303,8 +355,8 @@ replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
 # For most agents, `collect_data_spec` is a named tuple called 
 # `Trajectory`, containing the specs for observations, actions,
 # rewards, and other items.
-agent.collect_data_spec
-agent.collect_data_spec._fields
+#agent.collect_data_spec
+agent.collect_data_spec.observation
 ```
 
 
@@ -338,12 +390,37 @@ For more details see the drivers module.
 <https://github.com/tensorflow/agents/blob/master/tf_agents/docs/python/tf_agents/drivers.md>
 The replay buffer is now a collection of Trajectories.
 
-For the curious:
-Uncomment to peel one of these off and inspect it.
+Let's take a look:
 
 ```{python}
-# iter(replay_buffer.as_dataset()).next()
+x_i = iter(replay_buffer.as_dataset()).next()
+x_i
 ```
+
+Wow, but that's unreadable.  Let's add some whitespace (hardcoded example below, numeric values may differ):
+
+```
+(
+Trajectory(
+           step_type   = <tf.Tensor: shape=(), dtype=int32, numpy=1>,
+           observation = <tf.Tensor: shape=(1,), dtype=float32, numpy=array([0.97752917], dtype=float32)>, 
+           action      = <tf.Tensor: shape=(), dtype=int64, numpy=0>, 
+           policy_info=(), 
+        next_step_type = <tf.Tensor: shape=(), dtype=int32, numpy=1>, 
+           reward      = <tf.Tensor: shape=(), dtype=float32, numpy=0.00044579292>, 
+           discount    = <tf.Tensor: shape=(), dtype=float32, numpy=1.0>
+           ), 
+BufferInfo(ids           = <tf.Tensor: shape=(), dtype=int64, numpy=87>, 
+           probabilities = <tf.Tensor: shape=(), dtype=float32, numpy=0.01>)
+)
+```
+
+
+```{python}
+x_i[0].observation.numpy()[0]
+x_i[0].action.numpy()
+```
+
 
 The agent needs access to the replay buffer. This is provided by creating an iterable `tf.data.Dataset` pipeline which will feed data to the agent.
  
@@ -356,28 +433,12 @@ dataset = replay_buffer.as_dataset(
     num_parallel_calls=3, 
     sample_batch_size=batch_size, 
     num_steps=2).prefetch(3)
-
-
-dataset
 ```
 
 ```{python}
 iterator = iter(dataset)
-
-print(iterator)
-```
-
-
-
-For the curious:
-
-Uncomment to see what the dataset iterator is feeding to the agent.
-Compare this representation of replay data 
-to the collection of individual trajectories shown earlier.
-
-
-```{python}
-# iterator.next()
+experience, unused_info = next(iterator)
+experience.action[:,1]
 ```
 
 
@@ -389,7 +450,6 @@ Two things must happen during the training loop:
 -   use that data to train the agent's neural network(s)
  
 This example also periodicially evaluates the policy and prints the current score.
-The following will take ~5 minutes to run.
 
 ```{python}
 # (Optional) Optimize by wrapping some of the code in a graph using TF function.
@@ -401,7 +461,11 @@ agent.train_step_counter.assign(0)
 # Evaluate the agent's policy once before training.
 avg_return = compute_avg_return(eval_env, agent.policy, num_eval_episodes)
 returns = [avg_return]
+returns
+```
 
+
+```{python}
 for _ in range(num_iterations):
 
   # Collect a few steps using collect_policy and save to the replay buffer.
@@ -427,24 +491,48 @@ for _ in range(num_iterations):
 
 ## Visualization
 
+### Plots
+
+
+
 ```{python}
-# ### Plots
-# 
-# Use `matplotlib.pyplot` to chart how the policy improved during training.
-# 
-# One iteration of `Cartpole-v0` consists of 200 time steps. The environment gives a reward of `+1` for each step the pole stays up, so the maximum return for one episode is 200. The charts shows the return increasing towards that maximum each time it is evaluated during training. (It may be a little unstable and not increase monotonically each time.)
+out = simulate(eval_env, agent.policy)
+```
+
+```{python}
+plt.plot(out[:,1])
+plt.ylabel('state')
+plt.show()
 
 
-import matplotlib
-import matplotlib.pyplot as plt
+plt.plot(out[:,2])
+plt.ylabel('action')
+plt.show()
+
+plt.plot(out[:,3])
+plt.ylabel('reward')
+plt.show()
+```
+
+
+ 
+Use `matplotlib.pyplot` to chart how the policy improved during training.
+ 
+One iteration of `fishing-v0` consists of 1000 time steps. MSY harvest is `rK/4` = `0.1 * 1 / 4`, so the optimal return for one episode is close to 25. 
+
+
+```{python}
 #@test {"skip": true}
 
 iterations = range(0, num_iterations + 1, eval_interval)
 plt.plot(iterations, returns)
 plt.ylabel('Average Return')
 plt.xlabel('Iterations')
-plt.ylim(top=250)
+plt.ylim(top=25)
 
 plt.show()
-#fig.savefig('foo.png', bbox_inches='tight')
+```
+
+```{python}
+plt.savefig('foo.png', bbox_inches='tight')
 ```

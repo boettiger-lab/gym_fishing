@@ -9,14 +9,14 @@ import numpy as np
 from csv import writer
 
 
-class FishingEnv(gym.Env):
+class AbstractFishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
-
+    
     def __init__(self, 
                  r = 0.1,
                  K = 1.0,
                  price = 1.0,
-                 sigma = 0.05,
+                 sigma = 0.01,
                  gamma = 0.99,
                  init_state = 0.75,
                  init_harvest = 0.0125,
@@ -49,7 +49,7 @@ class FishingEnv(gym.Env):
         self.action_space = spaces.Discrete(n_actions)
         self.observation_space = spaces.Box(np.array([0]), 
                                             np.array([2 * self.K]), 
-                                            dtype = np.float)
+                                            dtype = np.float32)
         
     def harvest_draw(self, quota):
         """
@@ -112,7 +112,7 @@ class FishingEnv(gym.Env):
     def reset(self):
         self.fish_population = np.array([self.init_state])
         
-        self.harvest = self.r * self.K / 4.0 / 2.0
+        self.harvest = 0.1 * 1 / 4.0 / 2.0
         self.years_passed = 0
         return self.fish_population
   
@@ -130,3 +130,16 @@ class FishingEnv(gym.Env):
   
     def close(self):
         pass
+
+
+
+
+class FishingEnv(AbstractFishingEnv):
+    def __init__(self, **kargs):
+        super(FishingEnv, self).__init__(n_actions = 3, **kargs)
+
+
+class FishingEnv100(AbstractFishingEnv):
+    def __init__(self, **kargs):
+        super(FishingEnv100, self).__init__(n_actions = 100, **kargs)
+  
