@@ -50,6 +50,8 @@ env.close()
 
 
 
+
+
 ```{r}
 library(tidyverse)
 fishing <- read_csv("fishing.csv", 
