@@ -1,5 +1,6 @@
 gym
 wheel
+setuptools
 tensorflow-probability
-tf-agents
-tensorflow
+tf-agents==0.4.0
+tensorflow==2.2.0
