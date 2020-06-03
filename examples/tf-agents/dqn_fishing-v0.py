@@ -33,8 +33,8 @@ from tf_agents.utils import common
 
 ## Grow memory as needed instead of pre-allocating (e.g. allows concurrent GPU usage)
 ## (TF2 version.  See https://stackoverflow.com/a/59126638/258662)
-gpu_devices = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(gpu_devices[0], True)
+#gpu_devices = tf.config.experimental.list_physical_devices('GPU')
+#tf.config.experimental.set_memory_growth(gpu_devices[0], True)
 
 tf.version.VERSION
 
