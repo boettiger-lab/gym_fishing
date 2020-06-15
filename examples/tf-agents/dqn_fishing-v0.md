@@ -1,15 +1,4 @@
 
-## Introduction
-
-This example shows how to train a [DQN (Deep Q
-Networks)](https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf)
-agent on the Cartpole environment using the TF-Agents library.
-
-![Cartpole
-environment](https://raw.githubusercontent.com/tensorflow/agents/master/docs/tutorials/images/cartpole.png)
-
-It will walk you through all the components in a Reinforcement Learning
-(RL) pipeline for training, evaluation and data collection.
 
 ## Setup
 
