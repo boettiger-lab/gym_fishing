@@ -23,5 +23,11 @@ Examples for running this gym environment in several frameworks:
 - [stable baselines](/stable-baselines)
   * [PPO](stable-baselines/stable-baselines-ppo.Rmd)
 
+## Theory
 
+The optimal dynamic management solution for the stochastic fisheries model is a "constant escapement" policy, as proven by [Reed 1979](https://doi.org/10.1016/0095-0696(79)90014-7).  For small noise, this corresponds to the same 'bang-bang' solution for the determinstic model, proven by [Clark 1973](https://doi.org/10.1086/260090).  Ignoring discounting, the long-term harvest under the constant escapement solution corresponds to the Maximum Sustainable Yield, or MSY, which is the optimal 'constant mortality' solution (i.e. under the constraint of having to harvest a fixed fraction _F_ of the stock each year), as demonstrated independently by [Schaefer 1954](https://doi.org/10.1007/BF02464432) and [Gordon 1954](https://doi.org/10.1086/257497). 
+
+The biomass at MSY can trivially be solved for by maximizing the growth function $X_{t+1} = f(X_t)$.  Discretizing the state space, the dynamic optimal harvest can easily be found by stochastic dynamic programming.  
+
+Here, we seek to compare the performance of modern RL methods, which make no a-priori assumptions about the stock recruitment function, to this known optimal solution (given the underlying population dynamics).  
 
