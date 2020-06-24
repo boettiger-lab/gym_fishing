@@ -17,11 +17,11 @@ Simple fishing model defined in a continuous state space of fish biomass, with:
 Examples for running this gym environment in several frameworks:
 
 - [keras-rl](/keras-rl)
-  * [DQN]()
+  * [DQN](examples/keras-rl/fishing.py)
 - [tensorflow/agents](/tf-agents)
-  * ...
+  * [DQN](https://github.com/boettiger-lab/gym_fishing/blob/master/examples/tf-agents/dqn_fishing-v0.py)
 - [stable baselines](/stable-baselines)
-  * ...
+  * [PPO](stable-baselines/stable-baselines-ppo.Rmd)
 
 
 
