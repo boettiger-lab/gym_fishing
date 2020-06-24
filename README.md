@@ -4,6 +4,16 @@ Here is the fishing gym. Work IN PROGRESS!
 
 ## Environments
 
+This repository provides [OpenAI-gym](https://github.com/openai/gym/) class definitions for the fisheries management problem.  See [Creating your own Gym Environments](https://github.com/openai/gym/blob/master/docs/creating-environments.md) for details. 
+
+
+Install the python `fishing_gym` module by cloning this repo and running:
+
+```
+python setup.py sdist bdist_wheel
+pip install -e .
+```
+
 So far, we have:
 
 Simple fishing model defined in a continuous state space of fish biomass, with:
@@ -14,7 +24,7 @@ Simple fishing model defined in a continuous state space of fish biomass, with:
 
 ## Examples
 
-Examples for running this gym environment in several frameworks:
+Examples for running this gym environment in several frameworks:  
 
 - [keras-rl](/keras-rl)
   * [DQN](examples/keras-rl/fishing.py)
@@ -22,6 +32,8 @@ Examples for running this gym environment in several frameworks:
   * [DQN](https://github.com/boettiger-lab/gym_fishing/blob/master/examples/tf-agents/dqn_fishing-v0.py)
 - [stable baselines](/stable-baselines)
   * [PPO](stable-baselines/stable-baselines-ppo.Rmd)
+
+Note that different frameworks have seperate and often conflicting dependencies.  See the `requirements.txt` file in each example, or better, the official doucmentation for each framework.  Consider using virtual environments to avoid conflicts.
 
 ## Theory
 
