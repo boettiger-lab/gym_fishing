@@ -21,7 +21,7 @@ def create_model(*_args, **kwargs):
     return SAC(env=create_env(), policy=MlpPolicy, verbose=1, **kwargs)
 
 hyperparam_optimization("sac", create_model, create_env, n_trials=20,
-                                             n_timesteps=int(1e5),
+                                             n_timesteps=int(1e6),
                                              n_jobs=1, seed=0,
                                              sampler_method='tpe', pruner_method='median',
                                              verbose=1)

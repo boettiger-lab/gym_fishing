@@ -36,5 +36,5 @@ print(np.mean(reward_list))
 plt.plot(np.linspace(0, 100, 101), np.mean(traj, axis=0))
 plt.xlabel("t")
 plt.ylabel("Average N")
-plt.savefig("trash.png")
+plt.savefig("plot.png")
 
