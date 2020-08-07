@@ -12,10 +12,38 @@ env = gym.make('fishing-v0')
 model = PPO2(MlpPolicy, env, verbose=1)
 model.learn(total_timesteps=100000)
 
-obs = env.reset()
-for i in range(1000):
-    action, _states = model.predict(obs)
-    obs, rewards, dones, info = env.step(action)
-    env.render()
+def simulate(model, total_timesteps):
+   obs = env.reset()
+   y = []
+   total_rewards = []
+   all_rewards = []
+   for i in range(total_timesteps):
+     action, _states = model.predict(obs)
+     obs, rewards, dones, info = env.step(action)
+     y.append(action)
+     total_rewards.append(rewards)
+     all_rewards.append(sum(total_rewards))
+   def get_action():
+       return y
+   def get_reward():
+       return all_rewards
+   get_action()
+   get_reward()
+   env.render()
+   env.close()
 
-env.close()
+
+   #def plot_action():
+   x = np.linspace(0, total_timesteps, total_timesteps)
+   fig, ax = plt.subplots()  # Create a figure and an axes. 
+   ax.scatter(x, get_action())
+   ax.set_xlabel('Timesteps')
+   ax.set_ylabel('Harvest')
+
+    
+   #def plot_reward():
+   x = np.linspace(0, total_timesteps, total_timesteps)
+   fig, bx = plt.subplots()  # Create a figure and an axes.
+   bx.plot(x, get_reward(), label='linear')
+   bx.set_xlabel('Timesteps')
+   ax.set_ylabel('Cumulative Reward')
