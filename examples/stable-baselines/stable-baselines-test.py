@@ -47,3 +47,6 @@ def simulate(model, total_timesteps):
    bx.plot(x, get_reward(), label='linear')
    bx.set_xlabel('Timesteps')
    ax.set_ylabel('Cumulative Reward')
+   
+   
+   simulate(model, total_timesteps=100000)
