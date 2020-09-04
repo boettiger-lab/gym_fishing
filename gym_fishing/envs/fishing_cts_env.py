@@ -21,7 +21,7 @@ class FishingCtsEnv(gym.Env):
 
         self.harvest = (self.r * self.K / 4.0) / 2.0
         
-        self.action_space = spaces.Box(np.array([0]), np.array([2 * self.K]), dtype = np.float)
+        self.action_space = spaces.Box(np.array([0]), np.array([self.K]), dtype = np.float)
         self.observation_space = spaces.Box(np.array([0]), np.array([2 * self.K]), dtype = np.float)
         
     def harvest_draw(self, quota):
@@ -52,10 +52,9 @@ class FishingCtsEnv(gym.Env):
         action = np.clip(action, 0, 2 * self.K)[0]
         
         
-        harvest = action
-        self.harvest = harvest
+        self.harvest = action
         
-        self.harvest_draw(harvest)
+        self.harvest_draw(self.harvest)
         self.population_draw()
         
         #self.reward += self.price * self.harvest
