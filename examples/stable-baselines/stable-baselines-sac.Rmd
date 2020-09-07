@@ -1,0 +1,104 @@
+---
+output: github_document
+---
+
+```{r}
+unlink("fishing.csv")
+reticulate::use_virtualenv("~/.virtualenvs/stable-baselines")
+```
+
+```{python results="hide"}
+import gym
+import gym_fishing
+import numpy as np
+
+from stable_baselines.sac.policies import MlpPolicy
+from stable_baselines import SAC
+```
+
+```{python  results="hide"}
+env = gym.make('fishing-v0')
+#env.n_actions = 3
+model = SAC(MlpPolicy, env, verbose=1)
+model.learn(total_timesteps=50000, log_interval=10)
+```
+
+```{python}
+del model # remove to demonstrate saving and loading
+
+model = SAC.load("sac_pendulum")
+
+obs = env.reset()
+while True:
+    action, _states = model.predict(obs)
+    obs, rewards, dones, info = env.step(action)
+    env.render()
+
+
+```
+
+## 3 discrete states
+
+```{python results="hide"}
+env = gym.make('fishing-v0')
+env.n_actions = 3
+model = PPO2(MlpPolicy, env, verbose=1)
+model.learn(total_timesteps=200000)
+
+obs = env.reset()
+for i in range(1000):
+    action, _states = model.predict(obs)
+    obs, rewards, dones, info = env.step(action)
+    env.render()
+
+env.close()
+
+```
+
+
+
+
+
+```{r}
+library(tidyverse)
+fishing <- read_csv("fishing.csv", 
+                    col_names = c("time", "state", "harvest", "action"))
+
+d <- max(fishing$time)
+n <-dim(fishing)[1] / d
+
+fishing$rep <- as.character(vapply(1:n, rep, integer(d), d))
+
+## Reward is calculated as net (cumulative) reward without any discounting (gamma = 1)
+gamma <- 1.0
+price <- 1.0
+fishing <- fishing %>% 
+  group_by(rep) %>% 
+  mutate(reward = cumsum(price * harvest * gamma^time))
+
+fishing %>% summarize(max(reward))
+```
+
+
+```{r}
+fishing %>% 
+#  filter(time < 100) %>%
+  ggplot(aes(time, state, col = rep)) + geom_line() + facet_wrap(~rep)
+
+```
+
+```{r}
+fishing %>% 
+#  filter(time < 150) %>%
+  ggplot(aes(time, harvest, col = rep)) + geom_line()  + facet_wrap(~rep)
+
+```
+
+```{r}
+fishing %>% 
+ # filter(time < 30) %>%
+  ggplot(aes(time, action, col = rep)) + geom_point() + geom_line() + facet_wrap(~rep)
+
+```
+
+
