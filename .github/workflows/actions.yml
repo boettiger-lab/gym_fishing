@@ -10,12 +10,9 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: '3.6'
+        python-version: '3.8'
     - name: Install dependencies
-      run: python -m pip install -r examples/keras-rl/requirements.txt
+      run: python -m pip install -r examples/stable-baselines3/requirements.txt
     - name: Install fisheries gym environment
-      run: |
-        make install
-    - name: Train and test
-      run: make test
+      run: cd examples/stable-baselines3/ && python plot.py
 
