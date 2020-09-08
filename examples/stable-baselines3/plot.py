@@ -10,7 +10,7 @@ from stable_baselines3 import SAC
 import numpy as np
 
 
-reps = 1
+reps = 100
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", type=float, default=0.75)
 args = parser.parse_args()
