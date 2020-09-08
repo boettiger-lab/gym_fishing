@@ -1,4 +1,4 @@
-When running sb3_sac.py, run pip3 install -r requirements_sb3.txt in a separate virtual environment. A corresponding requirements_sb2.txt will be made, but note that for SB2, you will need python 3.7. 
+When running sb3_sac.py, run `pip3 install -r requirements_sb3.txt` in a separate virtual environment. A corresponding requirements_sb2.txt will be made, but note that for SB2, you will need python 3.7. 
 
 The following are general descriptions of the files found here.
 
