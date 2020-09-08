@@ -61,11 +61,10 @@ class FishingCtsEnv(gym.Env):
         reward = max(self.price * self.harvest, 0.0)
         
         self.years_passed += 1
-        done = bool(self.years_passed > 1000)
+        done = bool(self.years_passed > 100)
 
         if self.fish_population <= 0.0:
             done = True
-            return self.fish_population, reward, done, {}
         
         
         return self.fish_population, reward, done, {}
