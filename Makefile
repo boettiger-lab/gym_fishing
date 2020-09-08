@@ -2,7 +2,6 @@
 # install module such that we can load it from anywhere in the python env
 
 install: 
-	pip install -r examples/keras-rl/requirements.txt
 	python setup.py sdist bdist_wheel
 	pip install -e .
 
