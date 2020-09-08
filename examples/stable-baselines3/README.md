@@ -2,7 +2,7 @@ When running sb3_sac.py, run pip3 install -r requirements_sb3.txt in a separate 
 
 The following are general descriptions of the files found here.
 
-sb_sac_cts.py: This trains an agent using SAC from stable_baselines3 to interact with fishing-v1 i.e. the continous action space fishing environment. The hyperparameters used here are from a round of tuning on optuna, so you should observe something like a bang-bang policy.
+sb3_sac.py: This trains an agent using SAC from stable_baselines3 to interact with fishing-v1 i.e. the continous action space fishing environment. The hyperparameters here are not leading to consistent near-optimal performance just yeat.
 
 tuning_sb3_sac.py: This is the script to run to perform a round of tuning.
 
