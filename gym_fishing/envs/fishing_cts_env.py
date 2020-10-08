@@ -10,15 +10,34 @@ import numpy as np
 class FishingCtsEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self):
-        self.fish_population = np.array([1.0])
-        self.K = 1.0
-        self.r = 0.1
-        self.price = 1.0
-        self.sigma = 0.0
-        
+    def __init__(self,
+                 K = 1.0,
+                 r = 0.1,
+                 price = 1.0,
+                 sigma = 0.0,
+                 init_state = 0.75,
+                 init_harvest = 0.0125,
+                 Tmax = 100,
+                 file = "fishing.csv",
+                 fig = "fishing.png"):
+                   
+                   
+        ## parameters
+        self.K = K
+        self.r = r
+        self.price = price
+        self.sigma = sigma
+        ## for reset
+        self.init_state = init_state
+        self.init_harvest = init_harvest
+        self.Tmax = Tmax
+        # for reporting purposes only
+        self.file = file
+        self.fig = fig
+        self.action = 0
         self.years_passed = 0
-
+        
+        self.fish_population = np.array([1.0])
         self.harvest = (self.r * self.K / 4.0) / 2.0
         
         self.action_space = spaces.Box(np.array([0]), np.array([self.K]), dtype = np.float)
@@ -48,10 +67,7 @@ class FishingCtsEnv(gym.Env):
     
     def step(self, action):
       
-        #assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
         action = np.clip(action, 0, 2 * self.K)[0]
-        
-        
         self.harvest = action
         
         self.harvest_draw(self.harvest)
@@ -61,38 +77,45 @@ class FishingCtsEnv(gym.Env):
         reward = max(self.price * self.harvest, 0.0)
         
         self.years_passed += 1
-        done = bool(self.years_passed > 100)
+        done = bool(self.years_passed > self.Tmax)
 
         if self.fish_population <= 0.0:
             done = True
-        
-        
+
         return self.fish_population, reward, done, {}
         
     
-    def reset(self, 
-              init_state = 0.75,
-              r = 0.1,
-              K = 1.0,
-              price = 1.0,
-              sigma = 0.0
-              ):
-        self.fish_population = np.array([init_state])
-        self.r = r
-        self.K = K
-        self.price = price
-        self.sigma = sigma
-        
-        
-        self.harvest = self.r * self.K / 4.0 / 2.0
-        
+    def reset(self):
+        self.fish_population = np.array([self.init_state])
+        self.write_obj = open(self.file, 'w+')
+        self.harvest = 0.1 * 1 / 4.0 / 2.0
         self.years_passed = 0
         return self.fish_population
   
   
     def render(self, mode='human'):
-        pass
-  
+      row_contents = [self.years_passed, 
+                      self.fish_population[0],
+                      self.action,
+                      self.harvest]
+      csv_writer = writer(self.write_obj)
+      csv_writer.writerow(row_contents)
+      return row_contents
   
     def close(self):
-        pass
+      close(self.file)
+
+    
+    def plot(self):
+      results = read_csv(self.file,
+                          names=['time','state','action','reward'])
+      fig, axs = plt.subplots(3,1)
+      axs[0].plot(results.state)
+      axs[0].set_ylabel('state')
+      axs[1].plot(results.action)
+      axs[1].set_ylabel('action')
+      axs[2].plot(results.reward)
+      axs[2].set_ylabel('reward')
+      fig.tight_layout()
+      plt.savefig(self.fig)
+      plt.close("all")

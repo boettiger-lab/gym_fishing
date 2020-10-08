@@ -18,9 +18,9 @@ class AbstractFishingEnv(gym.Env):
                  K = 1.0,
                  price = 1.0,
                  sigma = 0.01,
-                 gamma = 0.99,
                  init_state = 0.75,
                  init_harvest = 0.0125,
+                 Tmax = 100,
                  n_actions = 3,
                  file = "fishing.csv",
                  fig = "fishing.png"
@@ -34,7 +34,9 @@ class AbstractFishingEnv(gym.Env):
         self.r = r
         self.price = price
         self.sigma = sigma
-        self.gamma = gamma
+        ## for reset
+        self.init_state = init_state
+        self.init_harvest = init_harvest
         
         # for reporting purposes only
         self.file = file
@@ -42,10 +44,7 @@ class AbstractFishingEnv(gym.Env):
         self.action = 0
         self.years_passed = 0
         
-        ## for reset
-        self.init_state = init_state
-        self.init_harvest = init_harvest
-        
+
         ## Set the action space
         self.n_actions = n_actions
         self.action_space = spaces.Discrete(n_actions)
@@ -101,7 +100,7 @@ class AbstractFishingEnv(gym.Env):
         self.action = action
 
         self.years_passed += 1
-        done = bool(self.years_passed >= 1000)
+        done = bool(self.years_passed >= self.Tmax)
 
         if self.fish_population <= 0.0:
             done = True
