@@ -43,7 +43,7 @@ class AbstractFishingEnv(gym.Env):
         self.fig = fig
         self.action = 0
         self.years_passed = 0
-        
+        self.Tmax = Tmax
 
         ## Set the action space
         self.n_actions = n_actions

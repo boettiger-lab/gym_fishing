@@ -11,8 +11,14 @@ env = gym.make('fishing-v0',
 model = A2C('MlpPolicy', env, verbose=2)
 model.learn(total_timesteps=200000)
 
+model.save("results/a2c")
+
+## Evaluate model
+mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
+
+## Simulation for visualization purposes
 obs = env.reset()
-for i in range(1000):
+for i in range(100):
   action, _state = model.predict(obs)
   obs, reward, done, info = env.step(action)
   env.render()
