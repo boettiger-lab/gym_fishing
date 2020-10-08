@@ -22,8 +22,7 @@ class AbstractFishingEnv(gym.Env):
                  init_harvest = 0.0125,
                  Tmax = 100,
                  n_actions = 3,
-                 file = "fishing.csv",
-                 fig = "fishing.png"
+                 file = "fishing.csv"
                  ):
         ## Action and state           
         self.fish_population = np.array([init_state])
@@ -40,7 +39,6 @@ class AbstractFishingEnv(gym.Env):
         
         # for reporting purposes only
         self.file = file
-        self.fig = fig
         self.action = 0
         self.years_passed = 0
         self.Tmax = Tmax
@@ -105,8 +103,7 @@ class AbstractFishingEnv(gym.Env):
         if self.fish_population <= 0.0:
             done = True
             return self.fish_population, reward, done, {}
-        
-        
+
         return self.fish_population, reward, done, {}
         
     
@@ -116,8 +113,7 @@ class AbstractFishingEnv(gym.Env):
         self.harvest = 0.1 * 1 / 4.0 / 2.0
         self.years_passed = 0
         return self.fish_population
-  
-  
+
     def render(self, mode='human'):
       row_contents = [self.years_passed, 
                       self.fish_population[0],
@@ -128,10 +124,9 @@ class AbstractFishingEnv(gym.Env):
       return row_contents
   
     def close(self):
-      close(self.file)
-
+      pass
     
-    def plot(self):
+    def plot(self, output = "fishing.png"):
       results = read_csv(self.file,
                           names=['time','state','action','reward'])
       fig, axs = plt.subplots(3,1)
@@ -142,7 +137,7 @@ class AbstractFishingEnv(gym.Env):
       axs[2].plot(results.reward)
       axs[2].set_ylabel('reward')
       fig.tight_layout()
-      plt.savefig(self.fig)
+      plt.savefig(output)
       plt.close("all")
 
 

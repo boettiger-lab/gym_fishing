@@ -1,11 +1,14 @@
 
-
 import math
 from math import floor
 import gym
 from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
+from csv import writer
+from pandas import read_csv
+import matplotlib.pyplot as plt
+
 
 class FishingCtsEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -18,8 +21,7 @@ class FishingCtsEnv(gym.Env):
                  init_state = 0.75,
                  init_harvest = 0.0125,
                  Tmax = 100,
-                 file = "fishing.csv",
-                 fig = "fishing.png"):
+                 file = "fishing.csv"):
                    
                    
         ## parameters
@@ -33,7 +35,6 @@ class FishingCtsEnv(gym.Env):
         self.Tmax = Tmax
         # for reporting purposes only
         self.file = file
-        self.fig = fig
         self.action = 0
         self.years_passed = 0
         
@@ -106,7 +107,7 @@ class FishingCtsEnv(gym.Env):
       close(self.file)
 
     
-    def plot(self):
+    def plot(self, output = "fishing.png"):
       results = read_csv(self.file,
                           names=['time','state','action','reward'])
       fig, axs = plt.subplots(3,1)
@@ -117,5 +118,5 @@ class FishingCtsEnv(gym.Env):
       axs[2].plot(results.reward)
       axs[2].set_ylabel('reward')
       fig.tight_layout()
-      plt.savefig(self.fig)
+      plt.savefig(output)
       plt.close("all")
