@@ -7,7 +7,8 @@ from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
 from csv import writer
-
+from pandas import read_csv
+import matplotlib.pyplot as plt
 
 class AbstractFishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -21,7 +22,8 @@ class AbstractFishingEnv(gym.Env):
                  init_state = 0.75,
                  init_harvest = 0.0125,
                  n_actions = 3,
-                 file = "fishing.csv"
+                 file = "fishing.csv",
+                 fig = "fishing.png"
                  ):
         ## Action and state           
         self.fish_population = np.array([init_state])
@@ -36,9 +38,9 @@ class AbstractFishingEnv(gym.Env):
         
         # for reporting purposes only
         self.file = file
+        self.fig = fig
         self.action = 0
         self.years_passed = 0
-        
         
         ## for reset
         self.init_state = init_state
@@ -111,7 +113,7 @@ class AbstractFishingEnv(gym.Env):
     
     def reset(self):
         self.fish_population = np.array([self.init_state])
-        
+        self.write_obj = open(self.file, 'w+')
         self.harvest = 0.1 * 1 / 4.0 / 2.0
         self.years_passed = 0
         return self.fish_population
@@ -119,24 +121,38 @@ class AbstractFishingEnv(gym.Env):
   
     def render(self, mode='human'):
       row_contents = [self.years_passed, 
-                      self.fish_population[0], 
-                      self.harvest, 
-                      self.action]
-      with open(self.file, 'a+', newline='') as write_obj:
-            csv_writer = writer(write_obj)
-            csv_writer.writerow(row_contents)
-  
-
+                      self.fish_population[0],
+                      self.action,
+                      self.harvest]
+      csv_writer = writer(self.write_obj)
+      csv_writer.writerow(row_contents)
+      return row_contents
   
     def close(self):
-        pass
+      close(self.file)
+
+    
+    def plot(self):
+      results = read_csv(self.file,
+                          names=['time','state','action','reward'])
+      fig, axs = plt.subplots(3,1)
+      axs[0].plot(results.state)
+      axs[0].set_ylabel('state')
+      axs[1].plot(results.action)
+      axs[1].set_ylabel('action')
+      axs[2].plot(results.reward)
+      axs[2].set_ylabel('reward')
+      fig.tight_layout()
+      plt.savefig(self.fig)
+      plt.close("all")
+
 
 
 
 
 class FishingEnv(AbstractFishingEnv):
     def __init__(self, **kargs):
-        super(FishingEnv, self).__init__(n_actions = 3, **kargs)
+        super(FishingEnv, self).__init__(**kargs)
 
 
 class FishingEnv100(AbstractFishingEnv):
