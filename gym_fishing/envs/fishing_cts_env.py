@@ -37,12 +37,13 @@ class FishingCtsEnv(gym.Env):
         self.file = file
         self.action = 0
         self.years_passed = 0
+        self.reward = 0
         
         self.fish_population = np.array([1.0])
         self.harvest = (self.r * self.K / 4.0) / 2.0
         
-        self.action_space = spaces.Box(np.array([0]), np.array([self.K]), dtype = np.float)
-        self.observation_space = spaces.Box(np.array([0]), np.array([2 * self.K]), dtype = np.float)
+        self.action_space = spaces.Box(np.array([0]), np.array([self.K]), dtype = np.float32)
+        self.observation_space = spaces.Box(np.array([0]), np.array([2 * self.K]), dtype = np.float32)
         
     def harvest_draw(self, quota):
         """
@@ -74,9 +75,9 @@ class FishingCtsEnv(gym.Env):
         self.harvest_draw(self.harvest)
         self.population_draw()
         
-        #self.reward += self.price * self.harvest
+        ## should be the instanteous reward, not discounted
         reward = max(self.price * self.harvest, 0.0)
-        
+        self.reward = reward
         self.years_passed += 1
         done = bool(self.years_passed > self.Tmax)
 
@@ -89,7 +90,6 @@ class FishingCtsEnv(gym.Env):
     def reset(self):
         self.fish_population = np.array([self.init_state])
         self.write_obj = open(self.file, 'w+')
-        self.harvest = 0.1 * 1 / 4.0 / 2.0
         self.years_passed = 0
         return self.fish_population
   
@@ -98,7 +98,7 @@ class FishingCtsEnv(gym.Env):
       row_contents = [self.years_passed, 
                       self.fish_population[0],
                       self.action,
-                      self.harvest]
+                      self.reward]
       csv_writer = writer(self.write_obj)
       csv_writer.writerow(row_contents)
       return row_contents
@@ -110,12 +110,14 @@ class FishingCtsEnv(gym.Env):
     def plot(self, output = "fishing.png"):
       results = read_csv(self.file,
                           names=['time','state','action','reward'])
+      # technically should be discounted?
+      episode_reward = np.cumsum(results.reward)                    
       fig, axs = plt.subplots(3,1)
       axs[0].plot(results.state)
       axs[0].set_ylabel('state')
       axs[1].plot(results.action)
       axs[1].set_ylabel('action')
-      axs[2].plot(results.reward)
+      axs[2].plot(episode_reward)
       axs[2].set_ylabel('reward')
       fig.tight_layout()
       plt.savefig(output)
