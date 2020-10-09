@@ -6,7 +6,7 @@ from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
 from csv import writer
-from pandas import read_csv
+from pandas import read_csv, DataFrame
 import matplotlib.pyplot as plt
 
 
