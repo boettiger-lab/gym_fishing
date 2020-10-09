@@ -13,6 +13,8 @@ jobs:
         python-version: '3.8'
     - name: Install dependencies
       run: python -m pip install -r examples/requirements.txt
-    - name: Install fisheries gym environment
+    - name: install gym_fishing
+      run: make install
+    - name: run tests
       run: cd tests/ && python TD3-test.py
 
