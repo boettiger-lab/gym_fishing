@@ -8,13 +8,8 @@ model = TD3('MlpPolicy', env, verbose=1)
 model.learn(total_timesteps=200)
 
 ## Simulate a run with the trained model, visualize result
-obs = env.reset()
-for i in range(100):
-  action, _state = model.predict(obs)
-  obs, reward, done, info = env.step(action)
-  env.render()
-env.plot()
-
+df = env.simulate(model)
+env.plot(df, "results/td3.png")
 
 ## Evaluate model
 from stable_baselines3.common.evaluation import evaluate_policy
