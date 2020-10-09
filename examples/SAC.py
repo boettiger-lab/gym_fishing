@@ -4,7 +4,7 @@ from stable_baselines3 import SAC
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
-env = gym.make('fishing-v1',  file = "results/SAC.csv")
+env = gym.make('fishing-v1')
 model = SAC('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=200000)
 

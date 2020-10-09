@@ -4,7 +4,7 @@ from stable_baselines3 import TD3
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
-env = gym.make('fishing-v1',  file = "results/td3.csv")
+env = gym.make('fishing-v1')
 model = TD3('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=200000)
 
