@@ -16,5 +16,5 @@ jobs:
     - name: install gym_fishing
       run: make install
     - name: run tests
-      run: cd tests/ && python TD3-test.py
+      run: cd tests/ && python TD3-test.py && python DQN-test.py
 
