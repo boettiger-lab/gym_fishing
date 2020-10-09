@@ -5,15 +5,15 @@ import gym
 from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
-from csv import writer
-from pandas import read_csv
+from csv import writer, reader
+from pandas import read_csv, DataFrame
 import matplotlib.pyplot as plt
 
 class AbstractFishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
     
     def __init__(self, 
-                 r = 0.1,
+                 r = 0.3,
                  K = 1.0,
                  price = 1.0,
                  sigma = 0.01,
@@ -21,7 +21,7 @@ class AbstractFishingEnv(gym.Env):
                  init_harvest = 0.0125,
                  Tmax = 100,
                  n_actions = 3,
-                 file = "fishing.csv"
+                 file = None
                  ):
         ## Action and state           
         self.fish_population = np.array([init_state])
@@ -37,10 +37,12 @@ class AbstractFishingEnv(gym.Env):
         self.init_harvest = init_harvest
         
         # for reporting purposes only
-        self.file = file
         self.action = 0
         self.years_passed = 0
         self.Tmax = Tmax
+        if(file != None):
+          self.write_obj = open(file, 'w+')
+
 
         ## Set the action space
         self.n_actions = n_actions
@@ -74,7 +76,6 @@ class AbstractFishingEnv(gym.Env):
     def step(self, action):
       
         action = np.clip(action, int(0), int(self.n_actions))
-        
         if self.n_actions > 3:
           self.harvest = ( action / self.n_actions ) * self.K
         
@@ -86,11 +87,9 @@ class AbstractFishingEnv(gym.Env):
             self.harvest = 1.2 * self.harvest
           else:
             self.harvest = 0.8 * self.harvest
-            
-
+      
         self.harvest_draw(self.harvest)
         self.population_draw()
-        
         reward = max(self.price * self.harvest, 0.0)
         
         ## recording purposes only
@@ -105,10 +104,10 @@ class AbstractFishingEnv(gym.Env):
 
         return self.fish_population, reward, done, {}
         
-    
     def reset(self):
         self.fish_population = np.array([self.init_state])
-        self.write_obj = open(self.file, 'w+')
+        self.harvest = self.init_harvest
+        self.action = 0
         self.years_passed = 0
         return self.fish_population
 
@@ -122,24 +121,37 @@ class AbstractFishingEnv(gym.Env):
       return row_contents
   
     def close(self):
-      pass
-    
-    def plot(self, output = "fishing.png"):
-      results = read_csv(self.file,
-                          names=['time','state','action','reward'])
-      episode_reward = np.cumsum(results.reward)                    
-      fig, axs = plt.subplots(3,1)
-      axs[0].plot(results.state)
-      axs[0].set_ylabel('state')
-      axs[1].plot(results.action)
-      axs[1].set_ylabel('action')
-      axs[2].plot(episode_reward)
-      axs[2].set_ylabel('reward')
+      if(self.write_obj != None):
+        self.write_obj.close()
+
+    def simulate(env, model, reps = 1):
+      obs = env.reset()
+      row = []
+      for rep in range(reps):
+        for t in range(env.Tmax):
+          action, _state = model.predict(obs)
+          obs, reward, done, info = env.step(action)
+          row.append([t, obs, action, reward, rep])
+          if done:
+            break
+      df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
+      return df
+      
+    def plot(self, df, output = "fishing.png"):
+      for i in range(np.max(df.rep)):
+        results = df[df.rep == i]
+        episode_reward = np.cumsum(results.reward)                    
+        fig, axs = plt.subplots(3,1)
+        axs[0].plot(results.state, color="blue", alpha=0.3)
+        axs[0].set_ylabel('state')
+        axs[1].plot(results.action, color="blue", alpha=0.3)
+        axs[1].set_ylabel('action')
+        axs[2].plot(episode_reward, color="blue", alpha=0.3)
+        axs[2].set_ylabel('reward')
+        
       fig.tight_layout()
       plt.savefig(output)
       plt.close("all")
-
-
 
 
 

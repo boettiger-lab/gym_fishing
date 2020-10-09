@@ -5,20 +5,13 @@ from stable_baselines3 import A2C
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
-env = gym.make('fishing-v0', 
-               file = "results/a2c.csv", 
-               n_actions = 3)
-               
-model = A2C('MlpPolicy', env, verbose=1)
+env = gym.make('fishing-v0')
+model = A2C('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=500000)
 
-## Simulation for visualization purposes
-obs = env.reset()
-for i in range(100):
-  action, _state = model.predict(obs)
-  obs, reward, done, info = env.step(action)
-  env.render()
-env.plot("results/a2c.png")
+## simulate and plot results
+df = env.simulate(model, reps=10)
+env.plot(df, "results/a2c.png")
 
 
 ## Evaluate model

@@ -5,16 +5,12 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
 env = gym.make('fishing-v1',  file = "results/td3.csv")
-model = TD3('MlpPolicy', env, verbose=1)
+model = TD3('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=200000)
 
-## Simulation for visualization purposes
-obs = env.reset()
-for i in range(500):
-  action, _state = model.predict(obs)
-  obs, reward, done, info = env.step(action)
-  env.render()
-env.plot(output = "results/td3.png")
+## simulate and plot results
+df = env.simulate(model, reps=10)
+env.plot(df, "results/td3.png")
 
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
