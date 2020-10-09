@@ -1,5 +1,4 @@
 
-
 import math
 from math import floor
 import gym
@@ -74,7 +73,7 @@ class AbstractFishingEnv(gym.Env):
     
     def step(self, action):
       
-        assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
+        action = np.clip(action, int(0), int(self.n_actions))
         
         if self.n_actions > 3:
           self.harvest = ( action / self.n_actions ) * self.K

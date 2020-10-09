@@ -69,7 +69,8 @@ class FishingCtsEnv(gym.Env):
     
     def step(self, action):
       
-        action = np.clip(action, 0, 2 * self.K)[0]
+#        action = np.clip(action, 0, 2 * self.K)[0]
+        action = np.clip(action, self.action_space.low, self.action_space.high)
         self.harvest = action
         
         self.harvest_draw(self.harvest)

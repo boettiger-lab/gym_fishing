@@ -10,7 +10,7 @@ env = gym.make('fishing-v0', file = "results/dqn.csv")
 # Instantiate the agent
 model = DQN('MlpPolicy', env, verbose=1)
 # Train the agent
-model.learn(total_timesteps=int(2e4))
+model.learn(total_timesteps=int(5e5))
 
 ## Simulate / visualize a run
 obs = env.reset()
@@ -22,12 +22,10 @@ env.plot("results/dqn.png")
 
 
 # Evaluate the agent
-mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
+mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=50)
 print("mean reward:", mean_reward, "std:", std_reward)
-
 # Record score in leaderboard
 leaderboard("PPO", mean_reward, std_reward)
-
 
 # Save the agent
 model.save("results/dqn_fish_v0")
