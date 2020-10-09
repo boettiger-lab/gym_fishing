@@ -105,9 +105,9 @@ class FishingCtsEnv(gym.Env):
 
 
     def simulate(env, model, reps = 1):
-      obs = env.reset()
       row = []
       for rep in range(reps):
+        obs = env.reset()
         for t in range(env.Tmax):
           action, _state = model.predict(obs)
           obs, reward, done, info = env.step(action)
@@ -116,21 +116,22 @@ class FishingCtsEnv(gym.Env):
             break
       df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
       return df
-      
+    
     def plot(self, df, output = "fishing.png"):
+      fig, axs = plt.subplots(3,1)
       for i in range(np.max(df.rep)):
         results = df[df.rep == i]
         episode_reward = np.cumsum(results.reward)                    
-        fig, axs = plt.subplots(3,1)
-        axs[0].plot(results.state, color="blue", alpha=0.3)
-        axs[0].set_ylabel('state')
-        axs[1].plot(results.action, color="blue", alpha=0.3)
-        axs[1].set_ylabel('action')
-        axs[2].plot(episode_reward, color="blue", alpha=0.3)
-        axs[2].set_ylabel('reward')
-        
+        axs[0].plot(results.time, results.state, color="blue", alpha=0.3)
+        axs[1].plot(results.time, results.action, color="blue", alpha=0.3)
+        axs[2].plot(results.time, episode_reward, color="blue", alpha=0.3)
+      
+      axs[0].set_ylabel('state')
+      axs[1].set_ylabel('action')
+      axs[2].set_ylabel('reward')
       fig.tight_layout()
       plt.savefig(output)
       plt.close("all")
+
       
  
