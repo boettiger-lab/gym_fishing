@@ -1,25 +1,25 @@
 import numpy as np
 import gym
 import gym_fishing
-from stable_baselines3 import A2C
+from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
 env = gym.make('fishing-v0', 
-               file = "results/a2c.csv", 
+               file = "results/ppo.csv", 
                n_actions = 100)
                
-model = A2C('MlpPolicy', env, verbose=1)
+model = PPO('MlpPolicy', env, verbose=1)
 model.learn(total_timesteps=200000)
 
-model.save("results/a2c")
+model.save("results/ppo")
 
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
 print("mean reward:", mean_reward, "std:", std_reward)
 
 ## Primative leaderboard
-leaderboard("A2C", mean_reward, std_reward)
+leaderboard("PPO", mean_reward, std_reward)
 
 ## Simulation for visualization purposes
 obs = env.reset()
@@ -28,7 +28,7 @@ for i in range(100):
   obs, reward, done, info = env.step(action)
   env.render()
 
-env.plot("results/a2c.png")
+env.plot("results/ppo.png")
 
 
 

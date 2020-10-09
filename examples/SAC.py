@@ -1,23 +1,23 @@
 import gym
 import gym_fishing
-from stable_baselines3 import TD3
+from stable_baselines3 import SAC
 from stable_baselines3.common.evaluation import evaluate_policy
 from leaderboard import leaderboard
 
-env = gym.make('fishing-v1',  file = "results/td3.csv")
-model = TD3('MlpPolicy', env, verbose=1)
+env = gym.make('fishing-v1',  file = "results/SAC.csv")
+model = SAC('MlpPolicy', env, verbose=1)
 model.learn(total_timesteps=200000)
 
-model.save("results/td3")
+model.save("results/SAC")
 
-model = TD3.load("results/td3")
-env = gym.make('fishing-v1',  file = "results/td3.csv")
+model = SAC.load("results/SAC")
+env = gym.make('fishing-v1',  file = "results/SAC.csv")
 
 
 ## Evaluate model
 mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
 print("mean reward:", mean_reward, "std:", std_reward)
-leaderboard("TD3", mean_reward, std_reward)
+leaderboard("SAC", mean_reward, std_reward)
 
 ## Simulation for visualization purposes
 obs = env.reset()
@@ -26,5 +26,4 @@ for i in range(100):
   obs, reward, done, info = env.step(action)
   env.render()
 
-env.plot(output = "results/td3.png")
-   # obs = env.reset()
+env.plot(output = "results/SAC.png")
