@@ -6,7 +6,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 
 env = gym.make('fishing-v1',  file = "results/td3.csv")
 model = TD3('MlpPolicy', env, verbose=1)
-model.learn(total_timesteps=200000)
+model.learn(total_timesteps=200)
 
 model.save("results/td3")
 
@@ -15,7 +15,7 @@ env = gym.make('fishing-v1',  file = "results/td3.csv")
 
 
 ## Evaluate model
-mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=5)
 print("mean reward:", mean_reward, "std:", std_reward)
 
 ## Simulation for visualization purposes
