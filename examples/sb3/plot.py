@@ -10,13 +10,13 @@ from stable_baselines3 import SAC
 import numpy as np
 
 
-reps = 5
+reps = 25
 parser = argparse.ArgumentParser()
-parser.add_argument("-i", type=float, default=0.75)
+parser.add_argument("-i", type=int, default=0)
 args = parser.parse_args()
 
 env = gym.make('fishing-v1')
-model = SAC.load("sb3_sac")
+model = SAC.load(f"models/sb3_sac_{args.i}")
 trajs = [] #List to find agg. stats on trajectories
 reward_list = [] #To find agg. stats on rewards
 for i in range(reps):
