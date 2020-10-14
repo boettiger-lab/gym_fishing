@@ -13,6 +13,6 @@ register(
 
 register(
     id='fishing-v2',
-    entry_point='gym_fishing.envs:FishingEnv100',
+    entry_point='gym_fishing.envs:FishingTippingEnv',
 )
 
