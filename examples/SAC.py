@@ -3,7 +3,7 @@ import gym_fishing
 from stable_baselines3 import SAC
 from stable_baselines3.common.evaluation import evaluate_policy
 
-env = gym.make('fishing-v2', C = 0.01)
+env = gym.make('fishing-v3')
 model = SAC('MlpPolicy', env, verbose=0)
 model.learn(total_timesteps=200000)
 

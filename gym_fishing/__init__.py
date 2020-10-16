@@ -16,3 +16,7 @@ register(
     entry_point='gym_fishing.envs:FishingTippingEnv',
 )
 
+register(
+    id='fishing-v3',
+    entry_point='gym_fishing.envs:FishingObsError',
+)
