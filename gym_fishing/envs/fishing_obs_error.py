@@ -114,17 +114,18 @@ class FishingObsError(gym.Env):
       if(self.write_obj != None):
         self.write_obj.close()
 
-
     def simulate(env, model, reps = 1):
       row = []
       for rep in range(reps):
         obs = env.reset()
-        for t in range(env.Tmax):
+        reward = 0
+        for t in range(env.Tmax-1):
           action, _state = model.predict(obs)
-          obs, reward, done, info = env.step(action)
           row.append([t, obs, action, reward, rep])
+          obs, reward, done, info = env.step(action)
           if done:
             break
+        row.append([t+1, obs, None, reward, rep])
       df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
       return df
     
@@ -134,7 +135,8 @@ class FishingObsError(gym.Env):
         results = df[df.rep == i]
         episode_reward = np.cumsum(results.reward)                    
         axs[0].plot(results.time, results.state, color="blue", alpha=0.3)
-        axs[1].plot(results.time, results.action, color="blue", alpha=0.3)
+        import pdb; pdb.set_trace()
+        axs[1].plot(results.time.iloc[:-1], results.action.iloc[:-1], color="blue", alpha=0.3)
         axs[2].plot(results.time, episode_reward, color="blue", alpha=0.3)
       
       axs[0].set_ylabel('state')
@@ -143,6 +145,7 @@ class FishingObsError(gym.Env):
       fig.tight_layout()
       plt.savefig(output)
       plt.close("all")
+
       
 
 def observation_noise(mu, sigma, observation_space):
