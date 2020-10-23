@@ -145,7 +145,6 @@ class AbstractFishingEnv(gym.Env):
         results = df[df.rep == i]
         episode_reward = np.cumsum(results.reward)                    
         axs[0].plot(results.time, results.state, color="blue", alpha=0.3)
-        import pdb; pdb.set_trace()
         axs[1].plot(results.time.iloc[:-1], results.action.iloc[:-1], color="blue", alpha=0.3)
         axs[2].plot(results.time, episode_reward, color="blue", alpha=0.3)
       
