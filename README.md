@@ -31,6 +31,10 @@ A simple fishing model with logistic recruitment, defined in a continuous state 
 
 - `fishing-v0`: A discrete action space with three actions: maintain harvest level, increase harvest by 20%, decrease harvest by 20%. 
 - `fishing-v1` A continuous action space, `action` = quota.
+- `fishing-v2`: A growth model that contains a tipping point. Uses continuous action space
+- `fishing-v3`: Includes observation error. Continouous action space, logistic growth mode.
+- `fishing-v4`: Includes parameter uncertainty. 
+
 
 `fishing-v0` can be configured to allow a discrete action space n > 3 actions, where the action is then treated as a fishing quota, `quota = action / n_actions * K`.  (most frameworks do not support this however.)
 
