@@ -18,8 +18,6 @@ setuptools.setup(
               'Artificial Intelligence'],
   install_requires=[ 
           'gym',
-          'csv',
-          'math',
           'numpy',
           'pandas',
           'matplotlib'

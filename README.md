@@ -1,4 +1,4 @@
-![Install & Train](https://github.com/boettiger-lab/open_ai_fishing/workflows/Install%20&%20Train/badge.svg) [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Install & Train](https://github.com/boettiger-lab/gym_fishing/workflows/Install%20&%20Train/badge.svg)](https://github.com/boettiger-lab/gym_fishing/runs/1323937050?check_suite_focus=true) [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
 
 
