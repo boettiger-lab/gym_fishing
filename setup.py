@@ -2,7 +2,7 @@ import setuptools
 setuptools.setup(
   name = 'gym_fishing',
   packages = ['gym_fishing'],
-  version = '0.0.3',
+  version = '0.0.4',
   license='MIT',
   description="Provide gym environments for reinforcement learning",
   author = 'Carl Boettiger & Marcus Lapeyrolerie',
@@ -17,7 +17,12 @@ setuptools.setup(
               'AI', 
               'Artificial Intelligence'],
   install_requires=[ 
-          'gym'
+          'gym',
+          'csv',
+          'math',
+          'numpy',
+          'pandas',
+          'matplotlib'
       ],
   classifiers=[
     'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
