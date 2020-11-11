@@ -23,7 +23,7 @@ np$random$seed(12345L)
 
 ## Initialize our environment
 ENV <- "fishing-v0"
-env <- gym$make(ENV, sigma = 0.05) # with some process noise
+env <- gym$make(ENV, n_actions = 100, sigma = 0.05) # with some process noise
 
 ## We will try training an ensemble of models
 
@@ -35,7 +35,7 @@ model$learn(total_timesteps=200000L)
 ## Here we go.  Sit tight, this is gonna take a while!
 
 ## simulate models
-env$simulate(model, reps=50L)
+df <- env$simulate(model, reps=50L)
 
 
 ## infer a policy function from simulations?
@@ -44,12 +44,9 @@ env$simulate(model, reps=50L)
 
 
 ## Evaluate model over n replicates
-reward <- map_dfr(models, function(model){
-  reward <- sb3$common$evaluation$evaluate_policy(model, env, n_eval_episodes=50L)
-  reward <- data.frame(mean = reward[[1]], sd = reward[[2]])
-  reward
-},
-.id = "model")
+reward <- sb3$common$evaluation$evaluate_policy(model, env, n_eval_episodes=50L)
+reward <- data.frame(mean = reward[[1]], sd = reward[[2]])
+reward
 
 ##
 
@@ -62,12 +59,15 @@ sims <- df %>%
   as_tibble() %>%
   mutate(state = as.na(state),
          action = as.na(action),
-         reward = as.na(reward))
+         reward = as.na(reward),
+         rep = as.integer(rep))
 
 ## Plot
-p1 <- sims %>%
+ sims %>%
   pivot_longer(cols = c(state, action, reward)) %>%
-  ggplot(aes(time, value, col=model)) + facet_wrap(~name,ncol=1)
+  ggplot(aes(time, value, col = rep)) + 
+  geom_point() +
+  facet_wrap(~name,ncol=1, scales = "free_y")
 ggsave("results/sac.png")
 ## Evaluate model
 p1

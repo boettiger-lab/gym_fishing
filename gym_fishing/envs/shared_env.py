@@ -42,21 +42,24 @@ def simulate_mdp(env, model, reps = 1):
     for t in range(env.Tmax):
       action, _state = model.predict(obs)
       obs, reward, done, info = env.step(action)
-      row.append([t, obs, action, reward, rep])
+      row.append([t, obs, action, reward, int(rep)])
       if done:
         break
   df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
   return df
 
 
-def estimate_policyfn(env, model, reps = 1):
+def estimate_policyfn(env, model, reps = 1, n = 50):
   row = []
+  state_range = np.linspace(env.observation_space.low, 
+                            env.observation_space.high, 
+                            num=n, 
+                            dtype=env.observation_space.dtype)
   for rep in range(reps):
-    for obs in range(2*env.K):
+    for obs in state_range:
       action, _state = model.predict(obs)
-      row.append([obs, action, rep])
-      if done:
-        break
+      row.append([obs[0], action, rep])
+  
   df = DataFrame(row, columns=['state', 'action', 'rep'])
   return df
 

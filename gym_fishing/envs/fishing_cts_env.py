@@ -5,8 +5,9 @@ import gym
 from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
-from gym_fishing.envs.shared_env import harvest_draw, population_draw, csv_entry, simulate_mdp, plot_mdp
-
+from gym_fishing.envs.shared_env import harvest_draw, population_draw, \
+  csv_entry, simulate_mdp, plot_mdp, estimate_policyfn
+  
 class FishingCtsEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
@@ -86,6 +87,7 @@ class FishingCtsEnv(gym.Env):
     def plot(self, df, output = "results.png"):
       return plot_mdp(self, df, output)
       
-
+    def policyfn(env, model, reps = 1):
+      return estimate_policyfn(env, model, reps)
 
 
