@@ -53,8 +53,17 @@ policy %>% group_by(state, model) %>% summarize(action = mean(action)) %>%
   ggplot(aes(state, action, col=model)) + geom_line()
 
 
-policy %>% group_by(state) %>% summarize(action = mean(action)) %>%
-  ggplot(aes(state, action)) + geom_line()
+low <- function(x) quantile(x, probs = seq(0,1,by=0.05))[2]
+high <- function(x) quantile(x, probs = seq(0,1,by=0.05))[20]
+
+p2 <- policy %>% 
+  group_by(state) %>% 
+  summarise(mean_action = mean(action), low = low(action), high = high(action)) 
+
+p2 %>%
+  ggplot(aes(state, mean_action)) + 
+  geom_line() +
+  geom_ribbon(aes(ymin = low, ymax = high), alpha = 0.2)
 
 
 ## Evaluate model over n replicates
@@ -81,7 +90,7 @@ sims <- df %>%
          rep = as.integer(rep))
 
 ## Plot
- sims %>%
+sims %>%
   pivot_longer(cols = c(state, action, reward)) %>%
   ggplot(aes(time, value, col = rep)) + 
   geom_line(alpha=.8) +

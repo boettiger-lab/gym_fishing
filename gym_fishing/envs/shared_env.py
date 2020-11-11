@@ -42,7 +42,7 @@ def simulate_mdp(env, model, reps = 1):
     for t in range(env.Tmax):
       action, _state = model.predict(obs)
       obs, reward, done, info = env.step(action)
-      row.append([t, obs, action, reward, int(rep)])
+      row.append([t, obs[0], action, reward, int(rep)])
       if done:
         break
   df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
