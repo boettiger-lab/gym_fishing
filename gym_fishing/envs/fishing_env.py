@@ -5,9 +5,7 @@ import gym
 from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
-from csv import writer, reader
-from pandas import read_csv, DataFrame
-import matplotlib.pyplot as plt
+from gym_fishing.envs.shared_env import harvest_draw, population_draw, csv_entry, simulate_mdp, plot_mdp
 
 class AbstractFishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
@@ -51,28 +49,7 @@ class AbstractFishingEnv(gym.Env):
                                             np.array([2 * self.K]), 
                                             dtype = np.float32)
         
-    def harvest_draw(self, quota):
-        """
-        Select a value to harvest at each time step.
-        """
-        
-        ## index (fish.population[0]) to avoid promoting float to array
-        self.harvest = min(self.fish_population[0], quota)
-        self.fish_population = max(self.fish_population - self.harvest, 0.0)
-        return self.harvest
-    
-    def population_draw(self):
-        """
-        Select a value for population to grow or decrease at each time step.
-        """
-        self.fish_population = max(
-                                self.fish_population + self.r * self.fish_population \
-                                * (1.0 - self.fish_population / self.K) \
-                                + self.fish_population * self.sigma * np.random.normal(0,1),
-                                0.0)
-        return self.fish_population
 
-    
     def step(self, action):
       
         action = np.clip(action, int(0), int(self.n_actions))
@@ -88,8 +65,8 @@ class AbstractFishingEnv(gym.Env):
           else:
             self.harvest = 0.8 * self.harvest
       
-        self.harvest_draw(self.harvest)
-        self.population_draw()
+        harvest_draw(self, self.harvest)
+        population_draw(self)
         reward = max(self.price * self.harvest, 0.0)
         
         ## recording purposes only
@@ -111,49 +88,22 @@ class AbstractFishingEnv(gym.Env):
         self.years_passed = 0
         return self.fish_population
 
+
     def render(self, mode='human'):
-      row_contents = [self.years_passed, 
-                      self.fish_population[0],
-                      self.action,
-                      self.reward]
-      csv_writer = writer(self.write_obj)
-      csv_writer.writerow(row_contents)
-      return row_contents
+      return csv_entry(self)
   
     def close(self):
       if(self.write_obj != None):
         self.write_obj.close()
 
     def simulate(env, model, reps = 1):
-      row = []
-      for rep in range(reps):
-        obs = env.reset()
-        reward = 0
-        for t in range(env.Tmax-1):
-          action, _state = model.predict(obs)
-          row.append([t, obs, action, reward, rep])
-          obs, reward, done, info = env.step(action)
-          if done:
-            break
-        row.append([t+1, obs, None, reward, rep])
-      df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
-      return df
-    
-    def plot(self, df, output = "fishing.png"):
-      fig, axs = plt.subplots(3,1)
-      for i in range(np.max(df.rep)):
-        results = df[df.rep == i]
-        episode_reward = np.cumsum(results.reward)                    
-        axs[0].plot(results.time, results.state, color="blue", alpha=0.3)
-        axs[1].plot(results.time.iloc[:-1], results.action.iloc[:-1], color="blue", alpha=0.3)
-        axs[2].plot(results.time, episode_reward, color="blue", alpha=0.3)
+      return simulate_mdp(env, model, reps)
       
-      axs[0].set_ylabel('state')
-      axs[1].set_ylabel('action')
-      axs[2].set_ylabel('reward')
-      fig.tight_layout()
-      plt.savefig(output)
-      plt.close("all")
+    def plot(self, df, output = "results.png"):
+      return plot_mdp(self, df, output)
+
+
+
 
 
 
