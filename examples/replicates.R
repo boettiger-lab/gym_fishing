@@ -25,24 +25,26 @@ np$random$seed(12345L)
 ENV <- "fishing-v0"
 env <- gym$make(ENV, n_actions = 100L, sigma = 0.05) # with some process noise
 
-train <- function(env, algo = "DQN"){
+train <- function(env, algo = "SAC"){
   init_model <- sb3[[algo]]
-  model <- init_model('MlpPolicy', env, verbose=0L)
+  model <- init_model('MlSAClicy', env, verbose=0L)
   model$learn(total_timesteps=200000L)
 }
 
 
 ## Here we go.  Sit tight, this is gonna take a while!
-#models <- lapply(1:5, function(i) train(env, "DQN"))
+models <- lapply(1:5, function(i) train(env, "SAC"))
 
 ## save models
-#dir.create("results")
-#lapply(seq_along(models), function(i){
-#  models[[i]]$save(paste0("results/dqn", i))
-#})
+dir.create("results")
+lapply(seq_along(models), function(i){
+  models[[i]]$save(paste0("examples/results/SAC", i))
+})
+
+## Load models
+#models <- lapply(paste0("examples/results/SAC", 1:5), sb3$SAC$load)
 
 
-models <- lapply(paste0("examples/results/dqn", 1:5), sb3$DQN$load)
 ## simulate models
 df <- map_dfr(models, env$simulate, reps=50L, .id = "model")
 
@@ -64,7 +66,7 @@ p2 %>%
   ggplot(aes(state, mean_action)) + 
   geom_line() +
   geom_ribbon(aes(ymin = low, ymax = high), alpha = 0.2)
-
+ggsave("examples/results/SAC-policy.png")
 
 ## Evaluate model over n replicates
 reward <- 
@@ -89,13 +91,16 @@ sims <- df %>%
          reward = as.na(reward),
          rep = as.integer(rep))
 
-## Plot
-sims %>%
+sims %>% group_by(model, rep) %>% 
+  mutate(reward = cumsum(reward)) %>% 
+  ungroup() %>%
   pivot_longer(cols = c(state, action, reward)) %>%
   ggplot(aes(time, value, col = rep)) + 
   geom_line(alpha=.8) +
-  facet_grid(model~name, scales = "free")
+  facet_grid(name~model, scales = "free")
 
+
+ggsave("examples/results/SAC-sims.png")
 
 
 
