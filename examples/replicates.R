@@ -27,7 +27,7 @@ env <- gym$make(ENV, n_actions = 100L, sigma = 0.05) # with some process noise
 
 train <- function(env, algo = "SAC"){
   init_model <- sb3[[algo]]
-  model <- init_model('MlSAClicy', env, verbose=0L)
+  model <- init_model('MlpPolicy', env, verbose=0L)
   model$learn(total_timesteps=200000L)
 }
 
