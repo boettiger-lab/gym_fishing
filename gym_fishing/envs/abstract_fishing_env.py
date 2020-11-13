@@ -1,0 +1,117 @@
+import math
+import gym
+from gym import spaces, logger, error, utils
+from gym.utils import seeding
+import numpy as np
+import gym_fishing.envs.shared_env
+  
+class AbstractFishingEnv(gym.Env):
+    metadata = {'render.modes': ['human']}
+
+    def __init__(self,
+                 params = {"r": 0.3, "K": 1, "sigma": 0.1},
+                 init_state = 0.75,
+                 Tmax = 100,
+                 file = None):
+                   
+        ## parameters
+        self.K = params["K"]
+        self.r = params["r"]
+        self.sigma = params["sigma"]
+        
+        ## Initial state
+        self.state = np.array([init_state])
+
+        ## Preserve these for reset
+        self.init_state = init_state
+        self.reward = 0
+        self.harvest = 0
+        self.years_passed = 0
+        self.Tmax = Tmax
+
+        # for render() method only
+        if file != None:
+          self.write_obj = open(file, 'w+')
+
+        ## Best if cts actions / observations are normalized to a [-1, 1] domain
+        self.action_space = spaces.Box(np.array([-1]), np.array([1]), dtype = np.float32)
+        self.observation_space = spaces.Box(np.array([-1]), np.array([1]), dtype = np.float32)
+        
+    
+    def step(self, action):
+        ## Discrete Actions
+        if isinstance(self.action_space, gym.spaces.discrete.Discrete):
+          quota = ( action / self.n_actions ) * self.K
+          
+        ## Continuous Actions
+        else:  
+          action = np.clip(action, 
+                           self.action_space.low, 
+                           self.action_space.high)[0]
+          quota = (action + 1) * self.K
+
+
+        ## Map from re-normalized model space to [0,2K] real space                 
+        self.fish_population = (self.state[0] + 1) * self.K
+        
+        self.harvest = self.harvest_draw(quota)
+        self.population_draw()
+        
+        ## should be the instanteous reward, not discounted
+        self.reward = max(self.harvest, 0.0)
+        self.years_passed += 1
+        done = bool(self.years_passed > self.Tmax)
+
+        if self.fish_population <= 0.0:
+            done = True
+
+        return self.state, self.reward, done, {}
+        
+    
+    def reset(self):
+      self.state = np.array([self.init_state])
+      self.fish_population = self.init_state
+      self.years_passed = 0
+      
+      ## for tracking only
+      self.reward = 0
+      self.harvest = 0
+      return self.state
+
+
+    def render(self, mode='human'):
+      return csv_entry(self)
+  
+    def close(self):
+      if(self.write_obj != None):
+        self.write_obj.close()
+
+    def simulate(env, model, reps = 1):
+      return simulate_mdp(env, model, reps)
+      
+    def plot(self, df, output = "results.png"):
+      return plot_mdp(self, df, output)
+      
+    def policyfn(env, model, reps = 1):
+      return estimate_policyfn(env, model, reps)
+
+    def harvest_draw(self, quota):
+        """
+        Select a value to harvest at each time step.
+        """
+        
+        self.harvest = min(self.fish_population, quota)
+        self.fish_population = max(self.fish_population - self.harvest, 0.0)
+        return self. harvest
+    
+    def population_draw(self):
+        """
+        Select a value for population to grow or decrease at each time step.
+        """
+        self.fish_population = max(
+                                self.fish_population + self.r * self.fish_population \
+                                * (1.0 - self.fish_population / self.K) \
+                                + self.fish_population * self.sigma * np.random.normal(0,1),
+                                0.0)
+        return self.fish_population
+

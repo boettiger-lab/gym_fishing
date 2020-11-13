@@ -3,27 +3,7 @@ from csv import writer
 from pandas import read_csv, DataFrame
 import matplotlib.pyplot as plt
 
-## Shared methods
-def harvest_draw(self, quota):
-    """
-    Select a value to harvest at each time step.
-    """
-    
-    ## index (fish.population[0]) to avoid promoting float to array
-    self.harvest = min(self.fish_population[0], quota)
-    self.fish_population = max(self.fish_population - self.harvest, 0.0)
-    return self.harvest
 
-def population_draw(self):
-    """
-    Select a value for population to grow or decrease at each time step.
-    """
-    self.fish_population = max(
-                            self.fish_population + self.r * self.fish_population \
-                            * (1.0 - self.fish_population / self.K) \
-                            + self.fish_population * self.sigma * np.random.normal(0,1),
-                            0.0)
-    return self.fish_population
 
 
 def csv_entry(self):
