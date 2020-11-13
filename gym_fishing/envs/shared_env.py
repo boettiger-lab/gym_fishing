@@ -22,13 +22,15 @@ def simulate_mdp(env, model, reps = 1):
     for t in range(env.Tmax):
       action, _state = model.predict(obs)
       obs, reward, done, info = env.step(action)
+      
       ## discrete actions are not arrays, but cts actions are
       if isinstance(action, np.ndarray):
         action = action[0]
       if isinstance(reward, np.ndarray):
         reward = reward[0]
-          
-      row.append([t, obs[0], action, reward, int(rep)])
+      
+      fish_population = (obs[0] + 1) * env.K
+      row.append([t, fish_population, action, reward, int(rep)])
       if done:
         break
   df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
@@ -46,14 +48,17 @@ def estimate_policyfn(env, model, reps = 1, n = 50):
       action, _state = model.predict(obs)
       if isinstance(action, np.ndarray):
         action = action[0]
-      row.append([obs[0], action, rep])
+      
+      fish_population = (obs[0] + 1) * env.K
+      row.append([fish_population, action, rep])
   
   df = DataFrame(row, columns=['state', 'action', 'rep'])
   return df
 
+
 def plot_mdp(self, df, output = "results.png"):
   fig, axs = plt.subplots(3,1)
-  for i in range(np.max(df.rep)):
+  for i in np.unique(df.rep):
     results = df[df.rep == i]
     episode_reward = np.cumsum(results.reward)                    
     axs[0].plot(results.time, results.state, color="blue", alpha=0.3)

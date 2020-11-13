@@ -9,7 +9,7 @@ class AbstractFishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self,
-                 params = {"r": 0.3, "K": 1, "sigma": 0.1},
+                 params = {"r": 0.3, "K": 1, "sigma": 0.01},
                  init_state = 0.75,
                  Tmax = 100,
                  file = None):
@@ -20,7 +20,7 @@ class AbstractFishingEnv(gym.Env):
         self.sigma = params["sigma"]
         
         ## Initial state
-        self.state = np.array([init_state])
+        self.state = np.array([init_state / self.K - 1])
 
         ## Preserve these for reset
         self.init_state = init_state
@@ -36,7 +36,7 @@ class AbstractFishingEnv(gym.Env):
         ## Best if cts actions / observations are normalized to a [-1, 1] domain
         self.action_space = spaces.Box(np.array([-1]), np.array([1]), dtype = np.float32)
         self.observation_space = spaces.Box(np.array([-1]), np.array([1]), dtype = np.float32)
-        
+  
     
     def step(self, action):
         ## Discrete Actions
@@ -57,6 +57,10 @@ class AbstractFishingEnv(gym.Env):
         self.harvest = self.harvest_draw(quota)
         self.population_draw()
         
+        ## Update system state:
+        self.state = np.array( [self.fish_population / self.K - 1] )
+        
+        
         ## should be the instanteous reward, not discounted
         self.reward = max(self.harvest, 0.0)
         self.years_passed += 1
@@ -69,7 +73,7 @@ class AbstractFishingEnv(gym.Env):
         
     
     def reset(self):
-      self.state = np.array([self.init_state])
+      self.state = np.array([init_state / self.K - 1])
       self.fish_population = self.init_state
       self.years_passed = 0
       
