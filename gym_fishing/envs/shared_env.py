@@ -66,6 +66,25 @@ class BaseFishingEnv():
             0.0)
         return self.fish_population
 
+    def step(self, action):
+      
+        action = np.clip(action, self.action_space.low, self.action_space.high)
+        self.harvest = action
+        
+        self.harvest_draw(self.harvest)
+        self.population_draw()
+        
+        ## should be the instanteous reward, not discounted
+        reward = max(self.price * self.harvest, 0.0)
+        self.reward = reward
+        self.years_passed += 1
+        done = bool(self.years_passed > self.Tmax)
+
+        if self.fish_population <= 0.0:
+            done = True
+
+        return self.fish_population, reward, done, {}
+    
     def reset(self):
         self.fish_population = np.array([self.init_state])
         self.harvest = self.init_harvest

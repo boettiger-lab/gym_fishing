@@ -25,41 +25,7 @@ class FishingModelError(BaseFishingEnv, gym.Env):
         self.K = np.clip(np.random.normal(K_mean, sigma_p), 0, 1e6)
         self.r = np.clip(np.random.normal(r_mean, sigma_p), 0, 1e6)
         self.sigma_p = sigma_p
-        
-    def harvest_draw(self, quota):
-        ## index (fish.population[0]) to avoid promoting float to array
-        self.harvest = min(self.fish_population[0], quota)
-        self.fish_population = max(self.fish_population - self.harvest, 0.0)
-        return self.harvest
     
-    def population_draw(self):
-        self.fish_population = max(
-                                self.fish_population + self.r * self.fish_population \
-                                * (1.0 - self.fish_population / self.K) \
-                                + self.fish_population * self.sigma * np.random.normal(0,1),
-                                0.0)
-        return self.fish_population
-
-    
-    def step(self, action):
-      
-        action = np.clip(action, self.action_space.low, self.action_space.high)
-        self.harvest = action
-        
-        self.harvest_draw(self.harvest)
-        self.population_draw()
-        
-        ## should be the instanteous reward, not discounted
-        reward = max(self.price * self.harvest, 0.0)
-        self.reward = reward
-        self.years_passed += 1
-        done = bool(self.years_passed > self.Tmax)
-
-        if self.fish_population <= 0.0:
-            done = True
-
-        return self.fish_population, reward, done, {}
-        
     
     def reset(self):
         self.K = np.clip(np.random.normal(self.K_mean, self.sigma_p), 0, 1e6)
