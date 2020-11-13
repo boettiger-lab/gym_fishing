@@ -3,7 +3,7 @@ import gym
 from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
-import gym_fishing.envs.shared_env
+from gym_fishing.envs.shared_env import *
   
 class AbstractFishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
