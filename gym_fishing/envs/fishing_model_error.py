@@ -20,7 +20,12 @@ class FishingModelError(BaseFishingEnv):
                  init_harvest=0.0125,
                  Tmax=100,
                  file_=None):
-        super().__init__(r, K, price, sigma, init_state, init_harvest, Tmax, file_)
+        super().__init__(price=price, 
+                         sigma=sigma, 
+                         init_state=init_state, 
+                         init_harvest=init_harvest, 
+                         Tmax=Tmax, 
+                         file_=file_)
         self.K_mean = K_mean
         self.r_mean = r_mean
         self.sigma_p = sigma_p
