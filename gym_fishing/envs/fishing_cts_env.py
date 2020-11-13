@@ -7,7 +7,7 @@ import numpy as np
 from gym_fishing.envs.shared_env import BaseFishingEnv
 
 
-class FishingCtsEnv(BaseFishingEnv, gym.Env):
+class FishingCtsEnv(BaseFishingEnv):
     metadata = {'render.modes': ['human']}
 
     def __init__(self,
@@ -20,3 +20,6 @@ class FishingCtsEnv(BaseFishingEnv, gym.Env):
                  Tmax=100,
                  file_=None):
         super().__init__(r, K, price, sigma, init_state, init_harvest, Tmax, file_)
+
+        # Since I have accumulated this class into the parent class BaseFishingEnv,
+        # this file has become pointless -> should we delete it?

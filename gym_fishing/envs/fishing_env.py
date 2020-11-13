@@ -5,7 +5,7 @@ import numpy as np
 from gym_fishing.envs.shared_env import BaseFishingEnv
 
 
-class FishingEnv(BaseFishingEnv, gym.Env):
+class FishingEnv(BaseFishingEnv):
     metadata = {'render.modes': ['human']}
 
     def __init__(self,

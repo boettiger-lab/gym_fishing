@@ -8,7 +8,7 @@ register(
 
 register(
     id='fishing-v1',
-    entry_point='gym_fishing.envs:FishingCtsEnv',
+    entry_point='gym_fishing.envs:BaseFishingEnv',
 )
 
 register(

@@ -2,13 +2,14 @@ import numpy as np
 from csv import writer
 from pandas import read_csv, DataFrame
 import matplotlib.pyplot as plt
+import gym
 from gym import spaces
 
 # This is the parent fishing class that holds a lot of common methods shared
 # across the gym_fishing environments.
 
 
-class BaseFishingEnv():
+class BaseFishingEnv(gym.Env):
 
     def __init__(self,
                  r=0.3,
