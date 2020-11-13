@@ -1,14 +1,10 @@
-
-import math
-from math import floor
 import gym
 from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
-from gym_fishing.envs.shared_env import harvest_draw, population_draw, \
-  csv_entry, simulate_mdp, plot_mdp, estimate_policyfn
+from gym_fishing.envs.shared_env import BaseFishingEnv
 
-class AbstractFishingEnv(gym.Env):
+class FishingEnv(BaseFishingEnv, gym.Env):
     metadata = {'render.modes': ['human']}
     
     def __init__(self, 
@@ -20,35 +16,11 @@ class AbstractFishingEnv(gym.Env):
                  init_harvest = 0.0125,
                  Tmax = 100,
                  n_actions = 3,
-                 file = None
+                 file_ = None
                  ):
-        ## Action and state           
-        self.fish_population = np.array([init_state])
-        self.harvest = init_harvest
-        self.reward = 0
-        ## parameters
-        self.K = K
-        self.r = r
-        self.price = price
-        self.sigma = sigma
-        ## for reset
-        self.init_state = init_state
-        self.init_harvest = init_harvest
-        
-        # for reporting purposes only
-        self.action = 0
-        self.years_passed = 0
-        self.Tmax = Tmax
-        if(file != None):
-          self.write_obj = open(file, 'w+')
-
-
-        ## Set the action space
+        super().__init__(r, K, price, sigma, init_state, init_harvest, Tmax, file_)
         self.n_actions = n_actions
         self.action_space = spaces.Discrete(n_actions)
-        self.observation_space = spaces.Box(np.array([0]), 
-                                            np.array([2 * self.K]), 
-                                            dtype = np.float32)
         
 
     def step(self, action):
@@ -66,8 +38,8 @@ class AbstractFishingEnv(gym.Env):
           else:
             self.harvest = 0.8 * self.harvest
       
-        harvest_draw(self, self.harvest)
-        population_draw(self)
+        self.harvest_draw(self.harvest)
+        self.population_draw()
         reward = max(self.price * self.harvest, 0.0)
         
         ## recording purposes only
@@ -82,41 +54,3 @@ class AbstractFishingEnv(gym.Env):
 
         return self.fish_population, self.reward, done, {}
         
-    def reset(self):
-        self.fish_population = np.array([self.init_state])
-        self.harvest = self.init_harvest
-        self.action = 0
-        self.years_passed = 0
-        return self.fish_population
-
-
-    def render(self, mode='human'):
-      return csv_entry(self)
-  
-    def close(self):
-      if(self.write_obj != None):
-        self.write_obj.close()
-
-    def simulate(env, model, reps = 1):
-      return simulate_mdp(env, model, reps)
-
-    def policyfn(env, model, reps = 1):
-      return estimate_policyfn(env, model, reps)
-      
-    def plot(self, df, output = "results.png"):
-      return plot_mdp(self, df, output)
-
-
-
-
-
-
-class FishingEnv(AbstractFishingEnv):
-    def __init__(self, **kargs):
-        super(FishingEnv, self).__init__(**kargs)
-
-
-class FishingEnv100(AbstractFishingEnv):
-    def __init__(self, **kargs):
-        super(FishingEnv100, self).__init__(n_actions = 100, **kargs)
-  

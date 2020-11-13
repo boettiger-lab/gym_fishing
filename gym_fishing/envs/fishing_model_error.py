@@ -1,14 +1,12 @@
-
 import math
 from math import floor
 import gym
 from gym import spaces, logger, error, utils
 from gym.utils import seeding
 import numpy as np
-from gym_fishing.envs.shared_env import harvest_draw, population_draw, csv_entry, simulate_mdp, plot_mdp
+from gym_fishing.envs.shared_env import BaseFishingEnv
 
-
-class FishingModelError(gym.Env):
+class FishingModelError(BaseFishingEnv, gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self,
@@ -20,34 +18,13 @@ class FishingModelError(gym.Env):
                  init_state = 0.75,
                  init_harvest = 0.0125,
                  Tmax = 100,
-                 file = None):
-                   
-                   
-        ## parameters
+                 file_ = None):
+        super().__init__(r, K, price, sigma, init_state, init_harvest, Tmax, file_)
         self.K_mean = K_mean
         self.r_mean = r_mean
         self.K = np.clip(np.random.normal(K_mean, sigma_p), 0, 1e6)
         self.r = np.clip(np.random.normal(r_mean, sigma_p), 0, 1e6)
-        self.price = price
-        self.sigma = sigma
         self.sigma_p = sigma_p
-        ## for reset
-        self.init_state = init_state
-        self.init_harvest = init_harvest
-        self.Tmax = Tmax
-        # for reporting purposes only
-        if(file != None):
-          self.write_obj = open(file, 'w+')
-          
-        self.action = 0
-        self.years_passed = 0
-        self.reward = 0
-        
-        self.fish_population = np.array([1.0])
-        self.harvest = (self.r * self.K / 4.0) / 2.0
-        
-        self.action_space = spaces.Box(np.array([0]), np.array([self.K]), dtype = np.float32)
-        self.observation_space = spaces.Box(np.array([0]), np.array([2 * self.K]), dtype = np.float32)
         
     def harvest_draw(self, quota):
         ## index (fish.population[0]) to avoid promoting float to array
@@ -66,12 +43,11 @@ class FishingModelError(gym.Env):
     
     def step(self, action):
       
-#        action = np.clip(action, 0, 2 * self.K)[0]
         action = np.clip(action, self.action_space.low, self.action_space.high)
         self.harvest = action
         
-        harvest_draw(self, self.harvest)
-        population_draw(self)
+        self.harvest_draw(self.harvest)
+        self.population_draw()
         
         ## should be the instanteous reward, not discounted
         reward = max(self.price * self.harvest, 0.0)
@@ -94,22 +70,3 @@ class FishingModelError(gym.Env):
         self.years_passed = 0
         return self.fish_population
   
-    def render(self, mode='human'):
-        return csv_entry(self)
-  
-    def close(self):
-        if(self.write_obj != None):
-          self.write_obj.close()
-
-    def simulate(env, model, reps = 1):
-        return simulate_mdp(env, model, reps)
-        
-    def plot(self, df, output = "results.png"):
-        return plot_mdp(self, df, output)
-        
-
-
-
-
-      
- 
