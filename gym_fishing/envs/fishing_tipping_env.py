@@ -41,7 +41,7 @@ class FishingTippingEnv(gym.Env):
         self.years_passed = 0
         self.reward = 0
         
-        self.state = np.array([1.0])
+        self.fish_population = np.array([1.0])
         self.harvest = (self.r * self.K / 4.0) / 2.0
         
         self.action_space = spaces.Box(np.array([0]), np.array([self.K]), dtype = np.float32)
@@ -49,24 +49,24 @@ class FishingTippingEnv(gym.Env):
         
     def harvest_draw(self, quota):
         ## index (fish.population[0]) to avoid promoting float to array
-        self.harvest = min(self.state[0], quota)
-        self.state = max(self.state - self.harvest, 0.0)
+        self.harvest = min(self.fish_population[0], quota)
+        self.fish_population = max(self.fish_population - self.harvest, 0.0)
         return self.harvest
     
     def population_draw(self):
-        self.state = max(
-          self.state * np.exp(self.r *
-                             (1 -self.state / self.K) *
-                             (self.state - self.C) +
-                             self.state * self.sigma * np.random.normal(0,1)
+        self.fish_population = max(
+          self.fish_population * np.exp(self.r *
+                             (1 -self.fish_population / self.K) *
+                             (self.fish_population - self.C) +
+                             self.fish_population * self.sigma * np.random.normal(0,1)
                              ), 
           0)
-        return self.state
+        return self.fish_population
 
     
     def step(self, action):
       
-        action = np.clip(action, self.action_space.low, self.action_space.high)
+        action = np.clip(action, self.action_space.low, self.action_space.high)[0]
         self.harvest = action
         
         harvest_draw(self, self.harvest)
@@ -78,17 +78,17 @@ class FishingTippingEnv(gym.Env):
         self.years_passed += 1
         done = bool(self.years_passed > self.Tmax)
 
-        if self.state <= 0.0:
+        if self.fish_population <= 0.0:
             done = True
 
-        return self.state, reward, done, {}
+        return self.fish_population, self.reward, done, {}
         
     def reset(self):
-        self.state = np.array([self.init_state])
+        self.fish_population = np.array([self.init_state])
         self.harvest = self.init_harvest
         self.action = 0
         self.years_passed = 0
-        return self.state
+        return self.fish_population
   
     def render(self, mode='human'):
         return csv_entry(self)

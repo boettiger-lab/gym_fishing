@@ -42,6 +42,12 @@ def simulate_mdp(env, model, reps = 1):
     for t in range(env.Tmax):
       action, _state = model.predict(obs)
       obs, reward, done, info = env.step(action)
+      ## discrete actions are not arrays, but cts actions are
+      if isinstance(action, np.ndarray):
+        action = action[0]
+      if isinstance(reward, np.ndarray):
+        reward = reward[0]
+          
       row.append([t, obs[0], action, reward, int(rep)])
       if done:
         break
@@ -58,6 +64,8 @@ def estimate_policyfn(env, model, reps = 1, n = 50):
   for rep in range(reps):
     for obs in state_range:
       action, _state = model.predict(obs)
+      if isinstance(action, np.ndarray):
+        action = action[0]
       row.append([obs[0], action, rep])
   
   df = DataFrame(row, columns=['state', 'action', 'rep'])
