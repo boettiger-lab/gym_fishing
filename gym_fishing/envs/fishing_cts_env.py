@@ -46,9 +46,9 @@ class FishingCtsEnv(gym.Env):
         self.observation_space = spaces.Box(np.array([0]), np.array([2 * self.K]), dtype = np.float32)
     
     def step(self, action):
-      
-#        action = np.clip(action, 0, 2 * self.K)[0]
-        action = np.clip(action, self.action_space.low, self.action_space.high)
+        action = np.clip(action, 
+                         self.action_space.low, 
+                         self.action_space.high)[0]
         self.harvest = action
         
         harvest_draw(self, self.harvest)
@@ -63,7 +63,7 @@ class FishingCtsEnv(gym.Env):
         if self.fish_population <= 0.0:
             done = True
 
-        return self.fish_population, reward, done, {}
+        return self.fish_population, self.reward, done, {}
         
     
     def reset(self):

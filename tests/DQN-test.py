@@ -2,8 +2,12 @@ import numpy as np
 import gym
 import gym_fishing
 from stable_baselines3 import DQN
+from stable_baselines3.common.env_checker import check_env
 
 env = gym.make('fishing-v0')
+
+check_env(env)
+
 model = DQN('MlpPolicy', env, verbose=1)
 model.learn(total_timesteps=200)
 

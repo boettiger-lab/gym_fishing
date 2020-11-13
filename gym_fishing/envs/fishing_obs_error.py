@@ -54,7 +54,7 @@ class FishingObsError(gym.Env):
 
     def step(self, action):
       
-        action = np.clip(action, self.action_space.low, self.action_space.high)
+        action = np.clip(action, self.action_space.low, self.action_space.high)[0]
         self.harvest = action
         
         harvest_draw(self, self.harvest)
@@ -72,7 +72,7 @@ class FishingObsError(gym.Env):
         if self.fish_population <= 0.0:
             done = True
 
-        return self.observed, reward, done, {}
+        return self.observed, self.reward, done, {}
         
     
     def reset(self):

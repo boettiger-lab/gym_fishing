@@ -72,7 +72,7 @@ class AbstractFishingEnv(gym.Env):
         
         ## recording purposes only
         self.action = int(action)
-        self.reward = np.array([reward])
+        self.reward = reward
         self.years_passed += 1
         done = bool(self.years_passed >= self.Tmax)
 
@@ -86,6 +86,7 @@ class AbstractFishingEnv(gym.Env):
         self.fish_population = np.array([self.init_state])
         self.harvest = self.init_harvest
         self.action = 0
+        self.reward = 0
         self.years_passed = 0
         return self.fish_population
 
