@@ -104,7 +104,7 @@ class BaseFishingEnv(gym.Env):
         row = []
         for rep in range(reps):
             past_obs = self.reset()
-            for t in range(env.Tmax):
+            for t in range(self.Tmax):
                 action, _state = model.predict(past_obs)
                 obs, reward, done, info = self.step(action)
                 # Appending the obs from the last step so that state,
