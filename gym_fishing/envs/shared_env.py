@@ -30,7 +30,7 @@ def simulate_mdp(env, model, reps = 1):
       
       fish_population = env.get_fish_population(obs)
       quota = env.get_quota(action)
-      row.append([t, fish_population, quita, reward, int(rep)])
+      row.append([t, fish_population, quota, reward, int(rep)])
       if done:
         break
   df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])

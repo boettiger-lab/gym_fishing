@@ -13,6 +13,9 @@ rep = 0
 ## Simulate under MSY
 env.reset()
 obs = env.state
+
+## Rewrite this as a custom `model` class that has a `predict` method for an obs
+
 for t in range(env.Tmax):
   fish_population = env.get_fish_population(obs)
   Q = max(fish_population - K/2,0) 
