@@ -22,6 +22,7 @@ class AbstractFishingEnv(gym.Env):
         
         ## Preserve these for reset
         self.init_state = init_state
+        self.fish_population = init_state
         self.reward = 0
         self.harvest = 0
         self.years_passed = 0
