@@ -28,8 +28,8 @@ def simulate_mdp(env, model, reps = 1):
       if isinstance(reward, np.ndarray):
         reward = reward[0]
       
-      fish_population = get_fish_population(env, obs)
-      quota = get_quota(env, action)
+      fish_population = env.get_fish_population(obs)
+      quota = env.get_quota(action)
       row.append([t, fish_population, quita, reward, int(rep)])
       if done:
         break
@@ -51,8 +51,8 @@ def estimate_policyfn(env, model, reps = 1, n = 50):
       if isinstance(action, np.ndarray):
         action = action[0]
       
-      fish_population = get_fish_population(env, obs)
-      quota = get_quota(env, action)
+      fish_population = env.get_fish_population(obs)
+      quota = env.get_quota(action)
       
       row.append([fish_population, quota, rep])
   

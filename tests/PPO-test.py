@@ -5,7 +5,7 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
 
 
-env = gym.make('fishing-v0')
+env = gym.make('fishing-v1')
 check_env(env)
 
 
