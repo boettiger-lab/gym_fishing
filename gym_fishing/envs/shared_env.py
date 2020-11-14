@@ -3,27 +3,6 @@ from csv import writer
 from pandas import read_csv, DataFrame
 import matplotlib.pyplot as plt
 
-## Shared methods
-def harvest_draw(self, quota):
-    """
-    Select a value to harvest at each time step.
-    """
-    
-    ## index (fish.population[0]) to avoid promoting float to array
-    self.harvest = min(self.fish_population[0], quota)
-    self.fish_population = max(self.fish_population - self.harvest, 0.0)
-    return self.harvest
-
-def population_draw(self):
-    """
-    Select a value for population to grow or decrease at each time step.
-    """
-    self.fish_population = max(
-                            self.fish_population + self.r * self.fish_population \
-                            * (1.0 - self.fish_population / self.K) \
-                            + self.fish_population * self.sigma * np.random.normal(0,1),
-                            0.0)
-    return self.fish_population
 
 
 def csv_entry(self):
@@ -42,17 +21,22 @@ def simulate_mdp(env, model, reps = 1):
     for t in range(env.Tmax):
       action, _state = model.predict(obs)
       obs, reward, done, info = env.step(action)
+      
       ## discrete actions are not arrays, but cts actions are
       if isinstance(action, np.ndarray):
         action = action[0]
       if isinstance(reward, np.ndarray):
         reward = reward[0]
-          
-      row.append([t, obs[0], action, reward, int(rep)])
+      
+      fish_population = env.get_fish_population(obs)
+      quota = env.get_quota(action)
+      row.append([t, fish_population, quota, reward, int(rep)])
       if done:
         break
   df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
   return df
+
+
 
 
 def estimate_policyfn(env, model, reps = 1, n = 50):
@@ -66,14 +50,19 @@ def estimate_policyfn(env, model, reps = 1, n = 50):
       action, _state = model.predict(obs)
       if isinstance(action, np.ndarray):
         action = action[0]
-      row.append([obs[0], action, rep])
+      
+      fish_population = env.get_fish_population(obs)
+      quota = env.get_quota(action)
+      
+      row.append([fish_population, quota, rep])
   
   df = DataFrame(row, columns=['state', 'action', 'rep'])
   return df
 
+
 def plot_mdp(self, df, output = "results.png"):
   fig, axs = plt.subplots(3,1)
-  for i in range(np.max(df.rep)):
+  for i in np.unique(df.rep):
     results = df[df.rep == i]
     episode_reward = np.cumsum(results.reward)                    
     axs[0].plot(results.time, results.state, color="blue", alpha=0.3)
