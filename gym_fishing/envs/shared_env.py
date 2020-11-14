@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 
 
-
 def csv_entry(self):
   row_contents = [self.years_passed, 
                   self.state[0],
@@ -29,12 +28,15 @@ def simulate_mdp(env, model, reps = 1):
       if isinstance(reward, np.ndarray):
         reward = reward[0]
       
-      fish_population = (obs[0] + 1) * env.K
-      row.append([t, fish_population, action, reward, int(rep)])
+      fish_population = get_fish_population(env, obs)
+      quota = get_quota(env, action)
+      row.append([t, fish_population, quita, reward, int(rep)])
       if done:
         break
   df = DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
   return df
+
+
 
 
 def estimate_policyfn(env, model, reps = 1, n = 50):
@@ -49,8 +51,10 @@ def estimate_policyfn(env, model, reps = 1, n = 50):
       if isinstance(action, np.ndarray):
         action = action[0]
       
-      fish_population = (obs[0] + 1) * env.K
-      row.append([fish_population, action, rep])
+      fish_population = get_fish_population(env, obs)
+      quota = get_quota(env, action)
+      
+      row.append([fish_population, quota, rep])
   
   df = DataFrame(row, columns=['state', 'action', 'rep'])
   return df

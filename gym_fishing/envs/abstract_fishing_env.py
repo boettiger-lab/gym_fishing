@@ -40,28 +40,18 @@ class AbstractFishingEnv(gym.Env):
   
     
     def step(self, action):
-        ## Discrete Actions
-        if isinstance(self.action_space, gym.spaces.discrete.Discrete):
-          quota = ( action / self.n_actions ) * self.K
-          
-        ## Continuous Actions
-        else:  
-          action = np.clip(action, 
-                           self.action_space.low, 
-                           self.action_space.high)[0]
-          quota = (action + 1) * self.K
-
 
         ## Map from re-normalized model space to [0,2K] real space                 
-        self.fish_population = (self.state[0] + 1) * self.K
+        quota = self.get_quota(action)
+        self.get_fish_population(self.state)
         
+        ## Apply harvest and population growth
         self.harvest = self.harvest_draw(quota)
         self.population_draw()
         
-        ## Update system state:
-        self.state = np.array( [self.fish_population / self.K - 1] )
-        
-        
+        ## Map population back to system state (normalized space):
+        self.get_state(self.fish_population)
+
         ## should be the instanteous reward, not discounted
         self.reward = max(self.harvest, 0.0)
         self.years_passed += 1
@@ -119,4 +109,36 @@ class AbstractFishingEnv(gym.Env):
                                 + self.fish_population * self.sigma * np.random.normal(0,1),
                                 0.0)
         return self.fish_population
+    
+    def get_quota(self, action):
+        """
+        Convert action into quota
+        """
+        if isinstance(self.action_space, gym.spaces.discrete.Discrete):
+            quota = ( action / self.n_actions ) * self.K
+        ## Continuous Actions
+        else:  
+            action = np.clip(action, 
+                           self.action_space.low, 
+                           self.action_space.high)[0]
+            quota = (action + 1) * self.K
+        return quota
+
+    def get_action(self, quota):
+        """
+        Convert quota into action
+        """
+        if isinstance(self.action_space, gym.spaces.discrete.Discrete):
+          return round(quota * self.n_actions/ self.K)
+        else:  
+          return quota / self.K - 1
+
+    def get_fish_population(self, state):      
+        self.fish_population = (state[0] + 1) * self.K
+        return self.fish_population
+        
+    def get_state(self, fish_population):
+        self.state = np.array([ fish_population / self.K - 1 ])
+        return self.state
+    
 
