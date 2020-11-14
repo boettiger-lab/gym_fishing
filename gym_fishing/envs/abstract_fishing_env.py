@@ -19,9 +19,7 @@ class AbstractFishingEnv(gym.Env):
         self.r = params["r"]
         self.sigma = params["sigma"]
         
-        ## Initial state
-        self.state = np.array([init_state / self.K - 1])
-
+        
         ## Preserve these for reset
         self.init_state = init_state
         self.reward = 0
@@ -32,6 +30,9 @@ class AbstractFishingEnv(gym.Env):
         # for render() method only
         if file != None:
           self.write_obj = open(file, 'w+')
+
+        ## Initial state
+        self.state = np.array([self.init_state / self.K - 1])
 
         ## Best if cts actions / observations are normalized to a [-1, 1] domain
         self.action_space = spaces.Box(np.array([-1]), np.array([1]), dtype = np.float32)
@@ -73,7 +74,7 @@ class AbstractFishingEnv(gym.Env):
         
     
     def reset(self):
-      self.state = np.array([init_state / self.K - 1])
+      self.state = np.array([self.init_state / self.K - 1])
       self.fish_population = self.init_state
       self.years_passed = 0
       
