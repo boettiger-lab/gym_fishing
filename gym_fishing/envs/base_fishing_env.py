@@ -5,7 +5,7 @@ from gym.utils import seeding
 import numpy as np
 from gym_fishing.envs.shared_env import *
   
-class AbstractFishingEnv(gym.Env):
+class BaseFishingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self,

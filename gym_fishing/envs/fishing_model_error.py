@@ -2,11 +2,11 @@
 import math
 import numpy as np
 import gym
-import gym_fishing.envs.abstract_fishing_env
-from gym_fishing.envs.abstract_fishing_env import AbstractFishingEnv
+import gym_fishing.envs.base_fishing_env
+from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
 
-class FishingModelError(AbstractFishingEnv):
+class FishingModelError(BaseFishingEnv):
     metadata = {'render.modes': ['human']}
 
     def __init__(self,

@@ -1,8 +1,8 @@
 import math
 import numpy as np
-from gym_fishing.envs.abstract_fishing_env import AbstractFishingEnv
+from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
-class FishingTippingEnv(AbstractFishingEnv):
+class FishingTippingEnv(BaseFishingEnv):
     def __init__(self,
                  r = 0.3, 
                  K = 1, 

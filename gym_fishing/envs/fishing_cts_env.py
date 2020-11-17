@@ -1,7 +1,7 @@
 import gym
-from gym_fishing.envs.abstract_fishing_env import AbstractFishingEnv
+from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
-class FishingCtsEnv(AbstractFishingEnv):
+class FishingCtsEnv(BaseFishingEnv):
     def __init__(self,
                  r = 0.3, 
                  K = 1, 
