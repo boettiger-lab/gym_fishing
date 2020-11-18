@@ -18,12 +18,11 @@ def simulate_mdp(env, model, reps = 1):
   row = []
   for rep in range(reps):
     obs = env.reset()
-    action = 0.
+    quota = 0.
     reward = 0.
     for t in range(env.Tmax):
       ## record
       fish_population = env.get_fish_population(obs)
-      quota = env.get_quota(action)
       row.append([t, fish_population, quota, reward, int(rep)])
       
       ## Predict and implement action
@@ -35,6 +34,7 @@ def simulate_mdp(env, model, reps = 1):
         action = action[0]
       if isinstance(reward, np.ndarray):
         reward = reward[0]
+      quota = env.get_quota(action)
 
       if done:
         break
