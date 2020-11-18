@@ -36,8 +36,12 @@ class BaseFishingEnv(gym.Env):
         self.state = np.array([self.init_state / self.K - 1])
 
         ## Best if cts actions / observations are normalized to a [-1, 1] domain
-        self.action_space = spaces.Box(np.array([-1], dtype = np.float32), np.array([1], dtype = np.float32), dtype = np.float32)
-        self.observation_space = spaces.Box(np.array([-1], dtype = np.float32), np.array([1], dtype = np.float32), dtype = np.float32)
+        self.action_space = spaces.Box(np.array([-1], dtype = np.float32),
+                                       np.array([1], dtype = np.float32), 
+                                       dtype = np.float32)
+        self.observation_space = spaces.Box(np.array([-1], dtype = np.float32),
+                                            np.array([1], dtype = np.float32),
+                                            dtype = np.float32)
   
     
     def step(self, action):
