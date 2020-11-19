@@ -27,6 +27,7 @@ class BaseFishingEnv(gym.Env):
         self.harvest = 0
         self.years_passed = 0
         self.Tmax = Tmax
+        self.file = file
 
         # for render() method only
         if file != None:

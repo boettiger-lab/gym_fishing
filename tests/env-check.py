@@ -14,3 +14,5 @@ check_env(env1)
 check_env(env2)
 #check_env(env3)
 check_env(env4)
+
+env0.close()
