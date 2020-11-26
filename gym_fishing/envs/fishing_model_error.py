@@ -1,4 +1,3 @@
-
 import math
 import numpy as np
 import gym
@@ -7,27 +6,33 @@ from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
 
 class FishingModelError(BaseFishingEnv):
-    metadata = {'render.modes': ['human']}
+    metadata = {"render.modes": ["human"]}
 
-    def __init__(self,
-                 K_mean = 1.0,
-                 r_mean = 0.3,
-                 price = 1.0,
-                 sigma = 0.02,
-                 sigma_p = 0.1,
-                 init_state = 0.75,
-                 Tmax = 100,
-                 file = None):
-                   
-        super().__init__(params = {"r": r_mean,
-                                   "K": K_mean,
-                                   "sigma": sigma,
-                                   "r_mean": r_mean,
-                                   "K_mean": K_mean,
-                                   "sigma_p": sigma_p},
-                         init_state = init_state,
-                         Tmax = Tmax,
-                         file = file)
+    def __init__(
+        self,
+        K_mean=1.0,
+        r_mean=0.3,
+        price=1.0,
+        sigma=0.02,
+        sigma_p=0.1,
+        init_state=0.75,
+        Tmax=100,
+        file=None,
+    ):
+
+        super().__init__(
+            params={
+                "r": r_mean,
+                "K": K_mean,
+                "sigma": sigma,
+                "r_mean": r_mean,
+                "K_mean": K_mean,
+                "sigma_p": sigma_p,
+            },
+            init_state=init_state,
+            Tmax=Tmax,
+            file=file,
+        )
         ## parameters
         self.K_mean = K_mean
         self.r_mean = r_mean
@@ -43,9 +48,3 @@ class FishingModelError(BaseFishingEnv):
         self.harvest = 0
         self.years_passed = 0
         return self.state
-  
-
-
-
-      
- 
