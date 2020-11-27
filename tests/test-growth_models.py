@@ -4,17 +4,87 @@ import numpy as np
 from gym_fishing.models.policies import msy, escapement, user_action
 from stable_baselines3.common.env_checker import check_env
 
-def test_env():
+def test_allen():
+  env = gym.make('fishing-v5', sigma=0) 
+  check_env(env)
+  #model = user_action(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "allen_msy.png")
+
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "allen_escapement.png")
+
+def test_beverton_holt():
   env = gym.make('fishing-v6', sigma=0) 
   check_env(env)
   #model = user_action(env)
   model = msy(env)
   df = env.simulate(model)
-  env.plot(df, "msy.png")
-
+  env.plot(df, "bh_msy.png")
   model = escapement(env)
   df = env.simulate(model)
-  env.plot(df, "escapement.png")
+  env.plot(df, "bh_escapement.png")
+
+
+def test_may():
+  env = gym.make('fishing-v7', sigma=0) 
+  check_env(env)
+  #model = user_action(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "may_msy.png")
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "may_escapement.png")
+
+def test_myers():
+  env = gym.make('fishing-v8', sigma=0) 
+  check_env(env)
+  #model = user_action(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "myers_msy.png")
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "myers_escapement.png")
+
+
+def test_ricker():
+  env = gym.make('fishing-v9', sigma=0) 
+  check_env(env)
+  #model = user_action(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "ricker_msy.png")
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "ricker_escapement.png")
+  
+
+def test_tipping():
+  env = gym.make('fishing-v2', sigma=0, init_state = 0.75) 
+  check_env(env)
+  # increases above tipping point
+  obs, reward, done, info = env.step(env.get_action(0))
+  assert env.get_fish_population(obs) > 0.75
+  
+  ## Decreases below the tipping point
+  env.init_state = 0.3
+  env.reset()
+  obs, reward, done, info = env.step(env.get_action(0))
+  assert env.get_fish_population(obs) < 0.3
+  
+  
+  
+  #model = user_action(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "tip_msy.png")
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "tip_escapement.png")
 
   
-test_env()
+test_allen()
