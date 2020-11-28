@@ -21,6 +21,7 @@ class BaseFishingEnv(gym.Env):
         self.K = params["K"]
         self.r = params["r"]
         self.sigma = params["sigma"]
+        self.params = params
 
         ## Preserve these for reset
         self.init_state = init_state
