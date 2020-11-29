@@ -11,7 +11,6 @@ def test_allen():
   model = msy(env)
   df = env.simulate(model)
   env.plot(df, "allen_msy.png")
-
   model = escapement(env)
   df = env.simulate(model)
   env.plot(df, "allen_escapement.png")
@@ -40,7 +39,7 @@ def test_may():
   env.plot(df, "may_escapement.png")
 
 def test_myers():
-  env = gym.make('fishing-v8', sigma=0) 
+  env = gym.make('fishing-v8', theta = 3, init_state = 1, sigma=0) 
   check_env(env)
   #model = user_action(env)
   model = msy(env)
@@ -76,8 +75,6 @@ def test_tipping():
   obs, reward, done, info = env.step(env.get_action(0))
   assert env.get_fish_population(obs) < 0.3
   
-  
-  
   #model = user_action(env)
   model = msy(env)
   df = env.simulate(model)
@@ -86,5 +83,27 @@ def test_tipping():
   df = env.simulate(model)
   env.plot(df, "tip_escapement.png")
 
-  
-test_allen()
+
+def test_nonstationary():
+  env = gym.make('fishing-v10', sigma=0, alpha = -0.001) 
+  check_env(env)
+  #model = user_action(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "ns_msy.png")
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "ns_escapement.png")
+
+
+
+def test_model_uncertainty():
+  env = gym.make('fishing-v11', sigma=0) 
+  check_env(env)
+  #model = user_action(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "mu_msy.png")
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "mu_escapement.png")

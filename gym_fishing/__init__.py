@@ -46,3 +46,13 @@ register(
     id="fishing-v9",
     entry_point="gym_fishing.envs:Ricker",
 )
+
+register(
+    id="fishing-v10",
+    entry_point="gym_fishing.envs:NonStationary",
+)
+
+register(
+    id="fishing-v11",
+    entry_point="gym_fishing.envs:ModelUncertainty",
+)
