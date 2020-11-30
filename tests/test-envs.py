@@ -4,6 +4,29 @@ import numpy as np
 from gym_fishing.models.policies import msy, escapement, user_action
 from stable_baselines3.common.env_checker import check_env
 
+def test_discrete():
+  env = gym.make('fishing-v0') 
+  check_env(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "v0_msy.png")
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "v0_escapement.png")
+ 
+
+def test_cts():
+  env = gym.make('fishing-v1') 
+  check_env(env)
+  model = msy(env)
+  df = env.simulate(model)
+  env.plot(df, "v1_msy.png")
+  model = escapement(env)
+  df = env.simulate(model)
+  env.plot(df, "v1_escapement.png")
+    
+
+
 def test_allen():
   env = gym.make('fishing-v5', sigma=0) 
   check_env(env)
@@ -30,7 +53,7 @@ def test_beverton_holt():
 def test_may():
   env = gym.make('fishing-v7', sigma=0) 
   check_env(env)
-  model = user_action(env)
+#  model = user_action(env)
   model = msy(env)
   df = env.simulate(model)
   env.plot(df, "may_msy.png")

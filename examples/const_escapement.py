@@ -10,14 +10,15 @@ env = gym.make('fishing-v1', r = r, K = K, sigma = 0.)
 ## inits
 row = []
 rep = 0
-## Simulate under MSY
 env.reset()
 obs = env.state
 
-## Rewrite this as a custom `model` class that has a `predict` method for an obs
+# Note that we must map between the "observed" space (on -1, 1) and model
+# space (0, 2K) for both actions and states with the get_* methods
 
 for t in range(env.Tmax):
   fish_population = env.get_fish_population(obs)
+  ## The escapement rule
   Q = max(fish_population - K/2,0) 
   action = env.get_action(Q)
   quota =  env.get_quota(action)
