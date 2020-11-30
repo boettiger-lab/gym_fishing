@@ -11,8 +11,7 @@ class BaseFishingEnv(gym.Env):
 
     def __init__(
         self,
-        params={"r": 0.3, "K": 1, "sigma": 0.01},
-        init_state=0.75,
+        params={"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75},
         Tmax=100,
         file=None,
     ):
@@ -21,11 +20,11 @@ class BaseFishingEnv(gym.Env):
         self.K = params["K"]
         self.r = params["r"]
         self.sigma = params["sigma"]
+        self.init_state = params["x0"]
         self.params = params
 
         ## Preserve these for reset
-        self.init_state = init_state
-        self.fish_population = init_state
+        self.fish_population = self.init_state
         self.reward = 0
         self.harvest = 0
         self.years_passed = 0

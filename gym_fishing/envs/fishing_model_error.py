@@ -28,8 +28,8 @@ class FishingModelError(BaseFishingEnv):
                 "r_mean": r_mean,
                 "K_mean": K_mean,
                 "sigma_p": sigma_p,
+                "x0": init_state,
             },
-            init_state=init_state,
             Tmax=Tmax,
             file=file,
         )

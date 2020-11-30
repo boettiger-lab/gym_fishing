@@ -30,7 +30,7 @@ def test_beverton_holt():
 def test_may():
   env = gym.make('fishing-v7', sigma=0) 
   check_env(env)
-  #model = user_action(env)
+  model = user_action(env)
   model = msy(env)
   df = env.simulate(model)
   env.plot(df, "may_msy.png")
@@ -85,7 +85,7 @@ def test_tipping():
 
 
 def test_nonstationary():
-  env = gym.make('fishing-v10', sigma=0, alpha = -0.001) 
+  env = gym.make('fishing-v10', sigma=0, alpha = -0.007) 
   check_env(env)
   #model = user_action(env)
   model = msy(env)
@@ -98,12 +98,13 @@ def test_nonstationary():
 
 
 def test_model_uncertainty():
-  env = gym.make('fishing-v11', sigma=0) 
+  np.random.seed(0)
+  env = gym.make('fishing-v11') 
   check_env(env)
-  #model = user_action(env)
+  model = user_action(env)
   model = msy(env)
-  df = env.simulate(model)
+  df = env.simulate(model, reps = 10)
   env.plot(df, "mu_msy.png")
   model = escapement(env)
-  df = env.simulate(model)
+  df = env.simulate(model, reps = 10)
   env.plot(df, "mu_escapement.png")

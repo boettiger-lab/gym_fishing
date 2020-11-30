@@ -8,8 +8,7 @@ class Allen(BaseFishingEnv):
         self, r=0.3, K=1, C=0.5, sigma=0.01, init_state=0.75, Tmax=100, file=None
     ):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma, "C": C},
-            init_state=init_state,
+            params={"r": r, "K": K, "sigma": sigma, "C": C, "x0": init_state},
             Tmax=Tmax,
             file=file,
         )
@@ -22,8 +21,7 @@ class Allen(BaseFishingEnv):
 class BevertonHolt(BaseFishingEnv):
     def __init__(self, r=0.3, K=1, sigma=0.01, init_state=0.75, Tmax=100, file=None):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma},
-            init_state=init_state,
+            params={"r": r, "K": K, "sigma": sigma, "x0": init_state},
             Tmax=Tmax,
             file=file,
         )
@@ -35,12 +33,25 @@ class BevertonHolt(BaseFishingEnv):
 
 class Myers(BaseFishingEnv):
     def __init__(
-        self, r = 1., K = 1., M = 1., theta = 3., sigma=0.01, 
-        init_state = 1.5, Tmax = 100, file = None
+        self,
+        r=1.0,
+        K=1.0,
+        M=1.0,
+        theta=3.0,
+        sigma=0.01,
+        init_state=1.5,
+        Tmax=100,
+        file=None,
     ):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma, "theta": theta, "M": M},
-            init_state=init_state,
+            params={
+                "r": r,
+                "K": K,
+                "sigma": sigma,
+                "theta": theta,
+                "M": M,
+                "x0": init_state,
+            },
             Tmax=Tmax,
             file=file,
         )
@@ -57,7 +68,7 @@ class May(BaseFishingEnv):
         self,
         r=0.7,
         K=1.5,
-        M = 1.5,
+        M=1.5,
         q=3,
         b=0.15,
         sigma=0.01,
@@ -67,8 +78,16 @@ class May(BaseFishingEnv):
         file=None,
     ):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma, "q": q, "b": b, "a": a, "M": M},
-            init_state=init_state,
+            params={
+                "r": r,
+                "K": K,
+                "sigma": sigma,
+                "q": q,
+                "b": b,
+                "a": a,
+                "M": M,
+                "x0": init_state,
+            },
             Tmax=Tmax,
             file=file,
         )
@@ -81,8 +100,7 @@ class May(BaseFishingEnv):
 class Ricker(BaseFishingEnv):
     def __init__(self, r=0.3, K=1, sigma=0.01, init_state=0.75, Tmax=100, file=None):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma},
-            init_state=init_state,
+            params={"r": r, "K": K, "sigma": sigma, "x0": init_state},
             Tmax=Tmax,
             file=file,
         )
@@ -92,15 +110,12 @@ class Ricker(BaseFishingEnv):
         return self.fish_population
 
 
-
-
 class NonStationary(BaseFishingEnv):
     def __init__(
         self, r=0.8, K=1, sigma=0.01, alpha=-0.007, init_state=0.75, Tmax=100, file=None
     ):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma, "alpha": alpha},
-            init_state=init_state,
+            params={"r": r, "K": K, "sigma": sigma, "alpha": alpha, "x0": init_state},
             Tmax=Tmax,
             file=file,
         )
@@ -114,14 +129,30 @@ class NonStationary(BaseFishingEnv):
 class ModelUncertainty(BaseFishingEnv):
     def __init__(
         self,
-        models = ["allen", "beverton_holt", "myers", "may", "ricker"]
-        params = {
-            "allen":  {"r": 0.3, "K": 1., "sigma": 0.01, "C": 0.5, "x0": 0.75},
+        models=["allen", "beverton_holt", "myers", "may", "ricker"],
+        params={
+            "allen": {"r": 0.3, "K": 1.0, "sigma": 0.01, "C": 0.5, "x0": 0.75},
             "beverton_holt": {"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75},
-            "myers": {"r": 1., "K": 1., "M": 1., "theta": 3., "sigma": 0.01, "x0": 1.5},
-            "may":  {"r": 0.7, "K": 1.5, "M": 1.5, "q": 3, "b": 0.15, "sigma": 0.01, "a": 0.2, "x0": 0.75},
-            "ricker":  {"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75}
-        }
+            "myers": {
+                "r": 1.0,
+                "K": 1.0,
+                "M": 1.0,
+                "theta": 3.0,
+                "sigma": 0.01,
+                "x0": 1.5,
+            },
+            "may": {
+                "r": 0.7,
+                "K": 1.5,
+                "M": 1.5,
+                "q": 3,
+                "b": 0.15,
+                "sigma": 0.01,
+                "a": 0.2,
+                "x0": 0.75,
+            },
+            "ricker": {"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75},
+        },
         Tmax=100,
         file=None,
     ):
@@ -130,7 +161,8 @@ class ModelUncertainty(BaseFishingEnv):
             file=file,
         )
         self.model = np.random.choice(models)
-        self.params= params
+        self.models = models
+        self.params = params
 
     def population_draw(self):
         f = population_model[self.model]
@@ -141,9 +173,7 @@ class ModelUncertainty(BaseFishingEnv):
     def reset(self):
         self.state = np.array([self.init_state / self.K - 1])
         self.fish_population = self.init_state
-        self.model = np.random.choice(
-            ["allen", "beverton_holt", "myers", "may", "ricker"]
-        )
+        self.model = np.random.choice(self.models)
         self.years_passed = 0
         self.reward = 0
         self.harvest = 0
@@ -175,10 +205,9 @@ def may(x, params):
         a = params["a"]
         q = params["q"]
         b = params["b"]
-        exp_mu = x * r * (1 - x / M) - a * np.power(x, q) / (
+        exp_mu = x + x * r * (1 - x / M) - a * np.power(x, q) / (
             np.power(x, q) + np.power(b, q)
         )
-        exp_mu = np.maximum(0, exp_mu)
         mu = np.log(exp_mu)
     return np.maximum(0, np.random.lognormal(mu, params["sigma"]))
 
@@ -194,7 +223,6 @@ def myers(x, params):
             - np.log(1 + np.power(x, params["theta"]) / params["M"])
         )
     return np.maximum(0, np.random.lognormal(mu, params["sigma"]))
-
 
 
 def ricker(x, params):

@@ -8,8 +8,7 @@ class FishingTippingEnv(BaseFishingEnv):
         self, r=0.3, K=1, C=0.5, sigma=0.1, init_state=0.75, Tmax=100, file=None
     ):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma, "C": C},
-            init_state=init_state,
+            params={"r": r, "K": K, "sigma": sigma, "C": C, "x0": init_state},
             Tmax=Tmax,
             file=file,
         )

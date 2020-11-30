@@ -15,8 +15,7 @@ class FishingEnv(BaseFishingEnv):
         file=None,
     ):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma},
-            init_state=init_state,
+            params={"r": r, "K": K, "sigma": sigma, "x0": init_state},
             Tmax=Tmax,
             file=file,
         )
