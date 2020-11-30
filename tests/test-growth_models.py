@@ -39,9 +39,9 @@ def test_may():
   env.plot(df, "may_escapement.png")
 
 def test_myers():
-  env = gym.make('fishing-v8', theta = 3, init_state = 1, sigma=0) 
+  env = gym.make('fishing-v8', sigma=0)
   check_env(env)
-  #model = user_action(env)
+  model = user_action(env)
   model = msy(env)
   df = env.simulate(model)
   env.plot(df, "myers_msy.png")

@@ -5,7 +5,7 @@ from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
 class Allen(BaseFishingEnv):
     def __init__(
-        self, r=0.3, K=1, C=0.5, sigma=0.1, init_state=0.75, Tmax=100, file=None
+        self, r=0.3, K=1, C=0.5, sigma=0.01, init_state=0.75, Tmax=100, file=None
     ):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma, "C": C},
@@ -20,7 +20,7 @@ class Allen(BaseFishingEnv):
 
 
 class BevertonHolt(BaseFishingEnv):
-    def __init__(self, r=0.3, K=1, sigma=0.1, init_state=0.75, Tmax=100, file=None):
+    def __init__(self, r=0.3, K=1, sigma=0.01, init_state=0.75, Tmax=100, file=None):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma},
             init_state=init_state,
@@ -35,10 +35,11 @@ class BevertonHolt(BaseFishingEnv):
 
 class Myers(BaseFishingEnv):
     def __init__(
-        self, r=0.3, K=1, theta=3, sigma=0.1, init_state=0.75, Tmax=100, file=None
+        self, r = 1., K = 1., M = 1., theta = 3., sigma=0.01, 
+        init_state = 1.5, Tmax = 100, file = None
     ):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma, "theta": theta},
+            params={"r": r, "K": K, "sigma": sigma, "theta": theta, "M": M},
             init_state=init_state,
             Tmax=Tmax,
             file=file,
@@ -49,21 +50,24 @@ class Myers(BaseFishingEnv):
         return self.fish_population
 
 
+# (r =.7, beta = 1.2, q = 3, b = 0.15, a = 0.2) # lower-state peak is optimal
+# (r =.7, beta = 1.5, q = 3, b = 0.15, a = 0.2) # higher-state peak is optimal
 class May(BaseFishingEnv):
     def __init__(
         self,
-        r=0.8,
-        K=1.0,
-        q=2,
-        b=0.131,
-        sigma=0.05,
+        r=0.7,
+        K=1.5,
+        M = 1.5,
+        q=3,
+        b=0.15,
+        sigma=0.01,
         a=0.2,
         init_state=0.75,
         Tmax=100,
         file=None,
     ):
         super().__init__(
-            params={"r": r, "K": K, "sigma": sigma, "q": q, "b": b, "a": a},
+            params={"r": r, "K": K, "sigma": sigma, "q": q, "b": b, "a": a, "M": M},
             init_state=init_state,
             Tmax=Tmax,
             file=file,
@@ -75,7 +79,7 @@ class May(BaseFishingEnv):
 
 
 class Ricker(BaseFishingEnv):
-    def __init__(self, r=0.3, K=1, sigma=0.1, init_state=0.75, Tmax=100, file=None):
+    def __init__(self, r=0.3, K=1, sigma=0.01, init_state=0.75, Tmax=100, file=None):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma},
             init_state=init_state,
@@ -88,9 +92,11 @@ class Ricker(BaseFishingEnv):
         return self.fish_population
 
 
+
+
 class NonStationary(BaseFishingEnv):
     def __init__(
-        self, r=0.8, K=1, sigma=0.1, alpha=-0.007, init_state=0.75, Tmax=100, file=None
+        self, r=0.8, K=1, sigma=0.01, alpha=-0.007, init_state=0.75, Tmax=100, file=None
     ):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma, "alpha": alpha},
@@ -108,40 +114,28 @@ class NonStationary(BaseFishingEnv):
 class ModelUncertainty(BaseFishingEnv):
     def __init__(
         self,
-        r=0.8,
-        K=1.0,
-        theta=3,
-        C=0.5,
-        q=2,
-        b=0.131,
-        sigma=0.05,
-        a=0.2,
-        init_state=0.75,
+        models = ["allen", "beverton_holt", "myers", "may", "ricker"]
+        params = {
+            "allen":  {"r": 0.3, "K": 1., "sigma": 0.01, "C": 0.5, "x0": 0.75},
+            "beverton_holt": {"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75},
+            "myers": {"r": 1., "K": 1., "M": 1., "theta": 3., "sigma": 0.01, "x0": 1.5},
+            "may":  {"r": 0.7, "K": 1.5, "M": 1.5, "q": 3, "b": 0.15, "sigma": 0.01, "a": 0.2, "x0": 0.75},
+            "ricker":  {"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75}
+        }
         Tmax=100,
         file=None,
     ):
         super().__init__(
-            params={
-                "r": r,
-                "K": K,
-                "sigma": sigma,
-                "q": q,
-                "b": b,
-                "a": a,
-                "C": C,
-                "theta": theta,
-            },
-            init_state=init_state,
             Tmax=Tmax,
             file=file,
         )
-        self.model = np.random.choice(
-            ["allen", "beverton_holt", "myers", "may", "ricker"]
-        )
+        self.model = np.random.choice(models)
+        self.params= params
 
     def population_draw(self):
         f = population_model[self.model]
-        self.fish_population = f(self.fish_population, self.params)
+        p = self.params[self.model]
+        self.fish_population = f(self.fish_population, p)
         return self.fish_population
 
     def reset(self):
@@ -174,32 +168,33 @@ def beverton_holt(x, params):
     return np.maximum(0, np.random.lognormal(mu, params["sigma"]))
 
 
-def myers(x, params):
-    ## FIXME this rescaling does not hold for theta != 1
-    A = params["r"] + 1
-    B = params["K"] / params["r"]
-    with np.errstate(divide="ignore"):
-        mu = (
-            np.log(A)
-            + params["theta"] * np.log(x)
-            - np.log(1 + np.power(x, params["theta"]) / np.power(B, params["theta"]))
-        )
-    return np.maximum(0, np.random.lognormal(mu, params["sigma"]))
-
-
 def may(x, params):
     with np.errstate(divide="ignore"):
         r = params["r"]
-        K = params["K"]
+        M = params["M"]
         a = params["a"]
         q = params["q"]
         b = params["b"]
-        exp_mu = x * r * (1 - x / K) - a * np.power(x, q) / (
+        exp_mu = x * r * (1 - x / M) - a * np.power(x, q) / (
             np.power(x, q) + np.power(b, q)
         )
         exp_mu = np.maximum(0, exp_mu)
         mu = np.log(exp_mu)
     return np.maximum(0, np.random.lognormal(mu, params["sigma"]))
+
+
+# be careful that K is chosen correctly (independent of M) to ensure
+# state space is correct size.  Default parameters of Myers class should work
+def myers(x, params):
+    A = params["r"] + 1
+    with np.errstate(divide="ignore"):
+        mu = (
+            np.log(A)
+            + params["theta"] * np.log(x)
+            - np.log(1 + np.power(x, params["theta"]) / params["M"])
+        )
+    return np.maximum(0, np.random.lognormal(mu, params["sigma"]))
+
 
 
 def ricker(x, params):
