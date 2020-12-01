@@ -1,1 +1,1 @@
-from gym_fishing.models.policies import msy, escapement, user_action
+from gym_fishing.models.policies import escapement, msy, user_action

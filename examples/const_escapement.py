@@ -5,7 +5,7 @@ import math
 
 r = 0.3
 K = 1
-env = gym.make('fishing-v1', r = r, K = K, sigma = 0.)
+env = gym.make("fishing-v1", r=r, K=K, sigma=0.0)
 
 ## inits
 row = []
@@ -17,18 +17,17 @@ obs = env.state
 # space (0, 2K) for both actions and states with the get_* methods
 
 for t in range(env.Tmax):
-  fish_population = env.get_fish_population(obs)
-  ## The escapement rule
-  Q = max(fish_population - K/2,0) 
-  action = env.get_action(Q)
-  quota =  env.get_quota(action)
-  row.append([t, fish_population, quota, reward, int(rep)])
-  obs, reward, done, info = env.step(action)
-  
-  
-df = pd.DataFrame(row, columns=['time', 'state', 'action', 'reward', "rep"])
+    fish_population = env.get_fish_population(obs)
+    ## The escapement rule
+    Q = max(fish_population - K / 2, 0)
+    action = env.get_action(Q)
+    quota = env.get_quota(action)
+    row.append([t, fish_population, quota, reward, int(rep)])
+    obs, reward, done, info = env.step(action)
+
+
+df = pd.DataFrame(row, columns=["time", "state", "action", "reward", "rep"])
 df
 
 
 env.plot(df, "const_escapement.png")
-

@@ -1,8 +1,10 @@
 import math
+
 import gym
-from gym import spaces, logger, error, utils
-from gym.utils import seeding
 import numpy as np
+from gym import error, logger, spaces, utils
+from gym.utils import seeding
+
 from gym_fishing.envs.shared_env import *
 
 

@@ -1,7 +1,8 @@
-import numpy as np
 from csv import writer
-from pandas import read_csv, DataFrame
+
 import matplotlib.pyplot as plt
+import numpy as np
+from pandas import DataFrame, read_csv
 
 
 def csv_entry(self):

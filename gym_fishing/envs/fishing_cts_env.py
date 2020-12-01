@@ -1,4 +1,5 @@
 import gym
+
 from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
 
