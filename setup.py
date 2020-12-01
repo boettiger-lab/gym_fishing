@@ -20,6 +20,32 @@ setuptools.setup(
         "Artificial Intelligence",
     ],
     install_requires=["gym", "numpy", "pandas", "matplotlib"],
+    extras_require={
+        "tests": [
+            # Run tests and coverage
+            "pytest",
+            "pytest-cov",
+            "pytest-env",
+            "pytest-xdist",
+            # Type check
+            "pytype",
+            # Lint code
+            "flake8>=3.8",
+            # Sort imports
+            "isort>=5.0",
+            # Reformat
+            "black",
+        ],
+        "docs": [
+            "sphinx",
+            "sphinx-autobuild",
+            "sphinx-rtd-theme",
+            # For spelling
+            "sphinxcontrib.spelling",
+            # Type hints support
+            "sphinx-autodoc-typehints",
+        ],
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",  # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
         "Intended Audience :: Developers",

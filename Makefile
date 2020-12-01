@@ -5,7 +5,7 @@ pytest:
 	./scripts/run_tests.sh
 
 type:
-	pytype -j auto
+	pytype -j auto .
 
 lint:
 	# stop the build if there are Python syntax errors or undefined names
@@ -21,8 +21,8 @@ format:
 	black -l 127 ${LINT_PATHS}
 
 check-codestyle:
-	# Sort imports
-	isort --check ${LINT_PATHS}
+	# Sort imports -- nope, isort and black disagree about env/__init__.py
+#	isort --check ${LINT_PATHS}
 	# Reformat using black
 	black --check -l 127 ${LINT_PATHS}
 
@@ -35,6 +35,7 @@ spelling:
 	cd docs && make spelling
 
 clean:
+  rm *-test.png
 	cd docs && make clean
 
 # PyPi package release

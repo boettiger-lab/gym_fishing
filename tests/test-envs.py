@@ -1,7 +1,6 @@
 import gym
 import numpy as np
 from stable_baselines3.common.env_checker import check_env
-
 import gym_fishing
 from gym_fishing.models.policies import escapement, msy, user_action
 
@@ -11,10 +10,10 @@ def test_discrete():
     check_env(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "v0_msy.png")
+    env.plot(df, "v0_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "v0_escapement.png")
+    env.plot(df, "v0_escapement-test.png")
 
 
 def test_cts():
@@ -22,10 +21,10 @@ def test_cts():
     check_env(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "v1_msy.png")
+    env.plot(df, "v1_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "v1_escapement.png")
+    env.plot(df, "v1_escapement-test.png")
 
 
 def test_allen():
@@ -34,10 +33,10 @@ def test_allen():
     # model = user_action(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "allen_msy.png")
+    env.plot(df, "allen_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "allen_escapement.png")
+    env.plot(df, "allen_escapement-test.png")
 
 
 def test_beverton_holt():
@@ -46,10 +45,10 @@ def test_beverton_holt():
     # model = user_action(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "bh_msy.png")
+    env.plot(df, "bh_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "bh_escapement.png")
+    env.plot(df, "bh_escapement-test.png")
 
 
 def test_may():
@@ -58,10 +57,10 @@ def test_may():
     #  model = user_action(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "may_msy.png")
+    env.plot(df, "may_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "may_escapement.png")
+    env.plot(df, "may_escapement-test.png")
 
 
 def test_myers():
@@ -70,10 +69,10 @@ def test_myers():
     model = user_action(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "myers_msy.png")
+    env.plot(df, "myers_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "myers_escapement.png")
+    env.plot(df, "myers_escapement-test.png")
 
 
 def test_ricker():
@@ -82,10 +81,10 @@ def test_ricker():
     # model = user_action(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "ricker_msy.png")
+    env.plot(df, "ricker_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "ricker_escapement.png")
+    env.plot(df, "ricker_escapement-test.png")
 
 
 def test_tipping():
@@ -104,10 +103,10 @@ def test_tipping():
     # model = user_action(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "tip_msy.png")
+    env.plot(df, "tip_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "tip_escapement.png")
+    env.plot(df, "tip_escapement-test.png")
 
 
 def test_nonstationary():
@@ -116,10 +115,10 @@ def test_nonstationary():
     # model = user_action(env)
     model = msy(env)
     df = env.simulate(model)
-    env.plot(df, "ns_msy.png")
+    env.plot(df, "ns_msy-test.png")
     model = escapement(env)
     df = env.simulate(model)
-    env.plot(df, "ns_escapement.png")
+    env.plot(df, "ns_escapement-test.png")
 
 
 def test_model_uncertainty():
@@ -129,7 +128,7 @@ def test_model_uncertainty():
     model = user_action(env)
     model = msy(env)
     df = env.simulate(model, reps=10)
-    env.plot(df, "mu_msy.png")
+    env.plot(df, "mu_msy-test.png")
     model = escapement(env)
     df = env.simulate(model, reps=10)
-    env.plot(df, "mu_escapement.png")
+    env.plot(df, "mu_escapement-test.png")

@@ -22,8 +22,8 @@ for t in range(env.Tmax):
     Q = max(fish_population - K / 2, 0)
     action = env.get_action(Q)
     quota = env.get_quota(action)
-    row.append([t, fish_population, quota, reward, int(rep)])
     obs, reward, done, info = env.step(action)
+    row.append([t, fish_population, quota, reward, int(rep)])
 
 
 df = pd.DataFrame(row, columns=["time", "state", "action", "reward", "rep"])
