@@ -16,7 +16,7 @@ def test_ppo():
 
     ## Simulate a run with the trained model, visualize result
     df = env.simulate(model)
-    env.plot(df, "PPO.png")
+    env.plot(df, "PPO-test.png")
 
     ## Evaluate model
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=5)

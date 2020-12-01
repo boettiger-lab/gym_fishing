@@ -16,11 +16,11 @@ def test_dqn():
 
     ## Simulate a run with the trained model, visualize result
     df = env.simulate(model)
-    env.plot(df, "dqn.png")
+    env.plot(df, "dqn-test.png")
 
     ## Evaluate model
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=5)
 
     ## Save and reload the model
-    model.save("dqn")
-    model = DQN.load("dqn")
+#    model.save("dqn")
+#    model = DQN.load("dqn")
