@@ -22,5 +22,7 @@ def test_dqn():
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=5)
 
     ## Save and reload the model
+
+
 #    model.save("dqn")
 #    model = DQN.load("dqn")
