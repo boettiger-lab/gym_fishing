@@ -22,6 +22,7 @@ setuptools.setup(
     install_requires=["gym", "numpy", "pandas", "matplotlib"],
     extras_require={
         "tests": [
+            "stable-baselines3"
             # Run tests and coverage
             "pytest",
             "pytest-cov",
