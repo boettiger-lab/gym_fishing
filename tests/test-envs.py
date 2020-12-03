@@ -5,6 +5,7 @@ from stable_baselines3.common.env_checker import check_env
 import gym_fishing
 from gym_fishing.models.policies import escapement, msy, user_action
 
+np.random.seed(0)
 
 def test_discrete():
     env = gym.make("fishing-v0")
@@ -89,6 +90,7 @@ def test_ricker():
 
 
 def test_tipping():
+    np.random.seed(0)
     env = gym.make("fishing-v2", sigma=0, init_state=0.75)
     check_env(env)
     # increases above tipping point
