@@ -186,10 +186,10 @@ def allen(x, params):
 
 
 def beverton_holt(x, params):
-    x = np.clip(x, 0., np.inf)
-    A = np.clip(params["r"], 0., np.inf) + 1
+    x = np.clip(x, 0.0, np.inf)
+    A = np.clip(params["r"], 0.0, np.inf) + 1
     with np.errstate(divide="ignore"):
-        B = np.clip(params["K"], 0, np.inf) / np.clip(params["r"], 0., np.inf)
+        B = np.clip(params["K"], 0, np.inf) / np.clip(params["r"], 0.0, np.inf)
         mu = np.log(A) + np.log(x) - np.log(1 + x / B)
     return np.maximum(0, np.random.lognormal(mu, params["sigma"]))
 
