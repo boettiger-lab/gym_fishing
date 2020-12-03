@@ -7,6 +7,7 @@ from gym_fishing.models.policies import escapement, msy, user_action
 
 np.random.seed(0)
 
+
 def test_discrete():
     env = gym.make("fishing-v0")
     check_env(env)
