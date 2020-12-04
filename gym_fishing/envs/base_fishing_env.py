@@ -101,6 +101,9 @@ class BaseFishingEnv(gym.Env):
     def policyfn(env, model, reps=1):
         return estimate_policyfn(env, model, reps)
 
+    def plot_policy(self, df, output="results.png"):
+        return plot_policyfn(self, df, output)
+
     def harvest_draw(self, quota):
         """
         Select a value to harvest at each time step.

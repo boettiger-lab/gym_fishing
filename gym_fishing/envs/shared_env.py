@@ -78,3 +78,11 @@ def plot_mdp(self, df, output="results.png"):
     fig.tight_layout()
     plt.savefig(output)
     plt.close("all")
+
+
+def plot_policyfn(self, df, output="policy.png"):
+    for i in np.unique(df.rep):
+        results = df[df.rep == i]
+        plt.plot(results.state, results.action, color="blue")
+    plt.savefig(output)
+    plt.close("all")

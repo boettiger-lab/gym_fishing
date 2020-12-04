@@ -14,15 +14,12 @@ def test_dqn():
     model = DQN("MlpPolicy", env, verbose=1)
     model.learn(total_timesteps=200)
 
-    ## Simulate a run with the trained model, visualize result
+    # Simulate a run with the trained model, visualize result
     df = env.simulate(model)
     env.plot(df, "dqn-test.png")
 
-    ## Evaluate model
+    # Evaluate model
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=5)
 
-    ## Save and reload the model
-
-
-#    model.save("dqn")
-#    model = DQN.load("dqn")
+    df = env.policyfn(model)
+    env.plot_policy(df, "policy-test.png")

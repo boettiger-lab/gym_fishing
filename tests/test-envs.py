@@ -96,13 +96,13 @@ def test_tipping():
     check_env(env)
     # increases above tipping point
     obs, reward, done, info = env.step(env.get_action(0))
-    assert env.get_fish_population(obs) > 0.75
+    assert env.get_fish_population(obs) >= 0.75
 
     ## Decreases below the tipping point
     env.init_state = 0.3
     env.reset()
     obs, reward, done, info = env.step(env.get_action(0))
-    assert env.get_fish_population(obs) < 0.3
+    assert env.get_fish_population(obs) <= 0.3
 
     # model = user_action(env)
     model = msy(env)
