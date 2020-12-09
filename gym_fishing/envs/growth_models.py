@@ -6,7 +6,7 @@ from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
 
 class Allen(BaseFishingEnv):
-    def __init__(self, r=0.3, K=1, C=0.5, sigma=0.01, init_state=0.75, Tmax=100, file=None):
+    def __init__(self, r=0.3, K=1, C=0.5, sigma=0.0, init_state=0.75, Tmax=100, file=None):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma, "C": C, "x0": init_state},
             Tmax=Tmax,
@@ -19,7 +19,7 @@ class Allen(BaseFishingEnv):
 
 
 class BevertonHolt(BaseFishingEnv):
-    def __init__(self, r=0.3, K=1, sigma=0.01, init_state=0.75, Tmax=100, file=None):
+    def __init__(self, r=0.3, K=1, sigma=0.0, init_state=0.75, Tmax=100, file=None):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma, "x0": init_state},
             Tmax=Tmax,
@@ -38,7 +38,7 @@ class Myers(BaseFishingEnv):
         K=1.0,
         M=1.0,
         theta=3.0,
-        sigma=0.01,
+        sigma=0.0,
         init_state=1.5,
         Tmax=100,
         file=None,
@@ -71,7 +71,7 @@ class May(BaseFishingEnv):
         M=1.5,
         q=3,
         b=0.15,
-        sigma=0.01,
+        sigma=0.0,
         a=0.2,
         init_state=0.75,
         Tmax=100,
@@ -98,7 +98,7 @@ class May(BaseFishingEnv):
 
 
 class Ricker(BaseFishingEnv):
-    def __init__(self, r=0.3, K=1, sigma=0.01, init_state=0.75, Tmax=100, file=None):
+    def __init__(self, r=0.3, K=1, sigma=0.0, init_state=0.75, Tmax=100, file=None):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma, "x0": init_state},
             Tmax=Tmax,
@@ -111,7 +111,7 @@ class Ricker(BaseFishingEnv):
 
 
 class NonStationary(BaseFishingEnv):
-    def __init__(self, r=0.8, K=1, sigma=0.01, alpha=-0.007, init_state=0.75, Tmax=100, file=None):
+    def __init__(self, r=0.8, K=1, sigma=0.0, alpha=-0.007, init_state=0.75, Tmax=100, file=None):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma, "alpha": alpha, "x0": init_state},
             Tmax=Tmax,
@@ -129,14 +129,14 @@ class ModelUncertainty(BaseFishingEnv):
         self,
         models=["allen", "beverton_holt", "myers", "may", "ricker"],
         params={
-            "allen": {"r": 0.3, "K": 1.0, "sigma": 0.01, "C": 0.5, "x0": 0.75},
-            "beverton_holt": {"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75},
+            "allen": {"r": 0.3, "K": 1.0, "sigma": 0.0, "C": 0.5, "x0": 0.75},
+            "beverton_holt": {"r": 0.3, "K": 1, "sigma": 0.0, "x0": 0.75},
             "myers": {
                 "r": 1.0,
                 "K": 1.0,
                 "M": 1.0,
                 "theta": 3.0,
-                "sigma": 0.01,
+                "sigma": 0.0,
                 "x0": 1.5,
             },
             "may": {
@@ -145,11 +145,11 @@ class ModelUncertainty(BaseFishingEnv):
                 "M": 1.5,
                 "q": 3,
                 "b": 0.15,
-                "sigma": 0.01,
+                "sigma": 0.0,
                 "a": 0.2,
                 "x0": 0.75,
             },
-            "ricker": {"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75},
+            "ricker": {"r": 0.3, "K": 1, "sigma": 0.0, "x0": 0.75},
         },
         Tmax=100,
         file=None,

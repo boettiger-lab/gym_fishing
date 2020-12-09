@@ -15,7 +15,7 @@ class FishingModelError(BaseFishingEnv):
         K_mean=1.0,
         r_mean=0.3,
         price=1.0,
-        sigma=0.02,
+        sigma=0.0,
         sigma_p=0.1,
         init_state=0.75,
         Tmax=100,

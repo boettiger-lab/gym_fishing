@@ -6,7 +6,7 @@ from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
 
 class FishingTippingEnv(BaseFishingEnv):
-    def __init__(self, r=0.3, K=1, C=0.5, sigma=0.1, init_state=0.75, Tmax=100, file=None):
+    def __init__(self, r=0.3, K=1, C=0.5, sigma=0.0, init_state=0.75, Tmax=100, file=None):
         super().__init__(
             params={"r": r, "K": K, "sigma": sigma, "C": C, "x0": init_state},
             Tmax=Tmax,

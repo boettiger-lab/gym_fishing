@@ -9,7 +9,7 @@ class FishingEnv(BaseFishingEnv):
         self,
         r=0.3,
         K=1,
-        sigma=0.01,
+        sigma=0.0,
         n_actions=100,
         init_state=0.75,
         Tmax=100,

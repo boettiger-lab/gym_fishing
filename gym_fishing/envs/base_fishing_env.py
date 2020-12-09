@@ -13,7 +13,7 @@ class BaseFishingEnv(gym.Env):
 
     def __init__(
         self,
-        params={"r": 0.3, "K": 1, "sigma": 0.01, "x0": 0.75},
+        params={"r": 0.3, "K": 1, "sigma": 0.0, "x0": 0.75},
         Tmax=100,
         file=None,
     ):
