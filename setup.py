@@ -9,7 +9,7 @@ setuptools.setup(
     author="Carl Boettiger & Marcus Lapeyrolerie",
     author_email="cboettig@gmail.com",
     url="https://github.com/boettiger-lab/gym_fishing",
-    download_url="https://github.com/boettiger-lab/gym_fishing/archive/v0.0.6.tar.gz",
+    download_url="https://github.com/boettiger-lab/gym_fishing/archive/v0.0.7.tar.gz",
     keywords=[
         "RL",
         "Reinforcement Learning",
