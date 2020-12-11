@@ -35,7 +35,7 @@ spelling:
 	cd docs && make spelling
 
 clean:
-	rm *test.png
+	rm -rf *test.png
 	cd docs && make clean
 
 # PyPi package release
