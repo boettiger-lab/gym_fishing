@@ -94,6 +94,7 @@ def test_tipping():
     np.random.seed(0)
     env = gym.make("fishing-v2", sigma=0, init_state=0.75)
     check_env(env)
+    env.reset()
     # increases above tipping point
     obs, reward, done, info = env.step(env.get_action(0))
     assert env.get_fish_population(obs) >= 0.75
