@@ -50,4 +50,7 @@ test-release:
 	python setup.py bdist_wheel
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
+install:
+	pip install -e .
+
 .PHONY: clean spelling doc lint format check-codestyle commit-checks

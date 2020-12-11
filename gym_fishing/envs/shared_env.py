@@ -83,6 +83,6 @@ def plot_mdp(self, df, output="results.png"):
 def plot_policyfn(self, df, output="policy.png"):
     for i in np.unique(df.rep):
         results = df[df.rep == i]
-        plt.plot(results.state, results.action, color="blue")
+        plt.plot(results.state, results.state - results.action, color="blue")
     plt.savefig(output)
     plt.close("all")
