@@ -1,7 +1,5 @@
 from gym.envs.registration import register
 
-from gym_fishing import envs, models
-
 register(
     id="fishing-v0",
     entry_point="gym_fishing.envs:FishingEnv",
