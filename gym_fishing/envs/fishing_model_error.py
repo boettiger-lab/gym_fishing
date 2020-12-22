@@ -1,5 +1,3 @@
-import math
-
 import gym
 import numpy as np
 
@@ -35,7 +33,7 @@ class FishingModelError(BaseFishingEnv):
             Tmax=Tmax,
             file=file,
         )
-        ## parameters
+        # parameters
         self.K_mean = K_mean
         self.r_mean = r_mean
         self.K = np.clip(np.random.normal(K_mean, sigma_p), 0, 1e6)

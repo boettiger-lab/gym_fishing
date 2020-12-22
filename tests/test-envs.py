@@ -99,7 +99,7 @@ def test_tipping():
     obs, reward, done, info = env.step(env.get_action(0))
     assert env.get_fish_population(obs) >= 0.75
 
-    ## Decreases below the tipping point
+    # Decreases below the tipping point
     env.init_state = 0.3
     env.reset()
     obs, reward, done, info = env.step(env.get_action(0))

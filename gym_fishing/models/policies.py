@@ -37,7 +37,11 @@ class user_action:
 
     def predict(self, obs, **kwargs):
         fish_population = self.env.get_fish_population(obs)
-        prompt = "fish population: " + str(fish_population) + ". Your harvest quota: "
+        prompt = (
+            "fish population: "
+            + str(fish_population)
+            + ". Your harvest quota: "
+        )
         quota = input(prompt)
         action = self.env.get_action(float(quota))
         return action, obs

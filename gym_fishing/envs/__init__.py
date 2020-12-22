@@ -1,6 +1,23 @@
-
 from gym.envs.registration import register
+
 from gym_fishing.envs.fishing_cts_env import FishingCtsEnv
+from gym_fishing.envs.fishing_env import FishingEnv
+from gym_fishing.envs.fishing_model_error import FishingModelError
+from gym_fishing.envs.fishing_tipping_env import FishingTippingEnv
+from gym_fishing.envs.growth_models import (
+    Allen,
+    BevertonHolt,
+    May,
+    ModelUncertainty,
+    Myers,
+    NonStationary,
+    Ricker,
+)
+
+register(
+    id="fishing-v0",
+    entry_point="gym_fishing.envs:FishingEnv",
+)
 
 register(
     id="fishing-v1",
@@ -9,46 +26,46 @@ register(
 
 register(
     id="fishing-v2",
-    entry_point="gym_fishing.envs.:FishingTippingEnv",
+    entry_point="gym_fishing.envs:FishingTippingEnv",
 )
 
 register(
     id="fishing-v4",
-    entry_point="gym_fishing.envs.fishing_model_error:FishingModelError",
+    entry_point="gym_fishing.envs:FishingModelError",
 )
 
 
 register(
     id="fishing-v5",
-    entry_point="gym_fishing.envs.growth_models:Allen",
+    entry_point="gym_fishing.envs:Allen",
 )
 
 register(
     id="fishing-v6",
-    entry_point="gym_fishing.envs.growth_models:BevertonHolt",
+    entry_point="gym_fishing.envs:BevertonHolt",
 )
 
 register(
     id="fishing-v7",
-    entry_point="gym_fishing.envs.growth_models:May",
+    entry_point="gym_fishing.envs:May",
 )
 
 register(
     id="fishing-v8",
-    entry_point="gym_fishing.envs.growth_models:Myers",
+    entry_point="gym_fishing.envs:Myers",
 )
 
 register(
     id="fishing-v9",
-    entry_point="gym_fishing.envs.growth_models:Ricker",
+    entry_point="gym_fishing.envs:Ricker",
 )
 
 register(
     id="fishing-v10",
-    entry_point="gym_fishing.envs.growth_models:NonStationary",
+    entry_point="gym_fishing.envs:NonStationary",
 )
 
 register(
     id="fishing-v11",
-    entry_point="gym_fishing.envs.growth_models:ModelUncertainty",
+    entry_point="gym_fishing.envs:ModelUncertainty",
 )

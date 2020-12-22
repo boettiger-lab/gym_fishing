@@ -18,13 +18,13 @@ format:
 	# Sort imports
 	isort ${LINT_PATHS}
 	# Reformat using black
-	black -l 127 ${LINT_PATHS}
+	black -l 79 ${LINT_PATHS}
 
 check-codestyle:
 	# Sort imports -- nope, isort and black disagree about env/__init__.py
 #	isort --check ${LINT_PATHS}
 	# Reformat using black
-	black --check -l 127 ${LINT_PATHS}
+	black --check -l 90 ${LINT_PATHS}
 
 commit-checks: format type lint
 

@@ -1,11 +1,16 @@
-import math
-
 import gym
 import numpy as np
-from gym import error, logger, spaces, utils
-from gym.utils import seeding
+from gym import spaces
 
-from gym_fishing.envs.shared_env import *
+from gym_fishing.envs.shared_env import (
+    csv_entry,
+    estimate_policyfn,
+    plot_mdp,
+    plot_policyfn,
+    simulate_mdp,
+)
+
+# consider adding support for gym logger, error, and seeding
 
 
 class BaseFishingEnv(gym.Env):
@@ -18,14 +23,14 @@ class BaseFishingEnv(gym.Env):
         file=None,
     ):
 
-        ## parameters
+        # parameters
         self.K = params["K"]
         self.r = params["r"]
         self.sigma = params["sigma"]
         self.init_state = params["x0"]
         self.params = params
 
-        ## Preserve these for reset
+        # Preserve these for reset
         self.fish_population = self.init_state
         self.reward = 0
         self.harvest = 0
@@ -37,10 +42,10 @@ class BaseFishingEnv(gym.Env):
         if file != None:
             self.write_obj = open(file, "w+")
 
-        ## Initial state
+        # Initial state
         self.state = np.array([self.init_state / self.K - 1])
 
-        ## Best if cts actions / observations are normalized to a [-1, 1] domain
+        # Best if cts actions / observations are normalized to a [-1, 1] domain
         self.action_space = spaces.Box(
             np.array([-1], dtype=np.float32),
             np.array([1], dtype=np.float32),
@@ -54,18 +59,18 @@ class BaseFishingEnv(gym.Env):
 
     def step(self, action):
 
-        ## Map from re-normalized model space to [0,2K] real space
+        # Map from re-normalized model space to [0,2K] real space
         quota = self.get_quota(action)
         self.get_fish_population(self.state)
 
-        ## Apply harvest and population growth
+        # Apply harvest and population growth
         self.harvest = self.harvest_draw(quota)
         self.population_draw()
 
-        ## Map population back to system state (normalized space):
+        # Map population back to system state (normalized space):
         self.get_state(self.fish_population)
 
-        ## should be the instanteous reward, not discounted
+        # should be the instanteous reward, not discounted
         self.reward = max(self.harvest, 0.0)
         self.years_passed += 1
         done = bool(self.years_passed > self.Tmax)
@@ -80,7 +85,7 @@ class BaseFishingEnv(gym.Env):
         self.fish_population = self.init_state
         self.years_passed = 0
 
-        ## for tracking only
+        # for tracking only
         self.reward = 0
         self.harvest = 0
         return self.state
@@ -119,7 +124,9 @@ class BaseFishingEnv(gym.Env):
         """
         self.fish_population = np.maximum(
             self.fish_population
-            + self.r * self.fish_population * (1.0 - self.fish_population / self.K)
+            + self.r
+            * self.fish_population
+            * (1.0 - self.fish_population / self.K)
             + self.fish_population * self.sigma * np.random.normal(0, 1),
             0.0,
         )
@@ -131,9 +138,11 @@ class BaseFishingEnv(gym.Env):
         """
         if isinstance(self.action_space, gym.spaces.discrete.Discrete):
             quota = (action / self.n_actions) * self.K
-        ## Continuous Actions
+        # Continuous Actions
         else:
-            action = np.clip(action, self.action_space.low, self.action_space.high)[0]
+            action = np.clip(
+                action, self.action_space.low, self.action_space.high
+            )[0]
             quota = (action + 1) * self.K
         return quota
 

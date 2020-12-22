@@ -1,6 +1,4 @@
-import gym
 from gym import spaces
-from gym.envs.registration import register
 
 from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
@@ -24,10 +22,3 @@ class FishingEnv(BaseFishingEnv):
         # override to use discrete actions
         self.n_actions = n_actions
         self.action_space = spaces.Discrete(n_actions)
-
-
-register(
-    id="fishing-v0",
-    entry_point="gym_fishing.envs:FishingEnv",
-)
-
