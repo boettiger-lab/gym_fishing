@@ -3,7 +3,7 @@ import setuptools
 setuptools.setup(
     name="gym_fishing",
     packages=["gym_fishing"],
-    version="0.0.8",
+    version="0.0.9",
     license="MIT",
     description="Provide gym environments for reinforcement learning",
     author="Carl Boettiger & Marcus Lapeyrolerie",
