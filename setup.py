@@ -2,7 +2,6 @@ import setuptools
 
 setuptools.setup(
     name="gym_fishing",
-    packages=["gym_fishing"],
     version="0.0.9",
     license="MIT",
     description="Provide gym environments for reinforcement learning",
@@ -18,6 +17,7 @@ setuptools.setup(
         "AI",
         "Artificial Intelligence",
     ],
+    packages=setuptools.find_packages(exclude=['docs', 'scripts', 'tests']),
     install_requires=["gym", "numpy", "pandas", "matplotlib"],
     extras_require={
         "tests": [
