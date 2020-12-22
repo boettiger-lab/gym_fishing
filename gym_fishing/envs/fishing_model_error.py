@@ -1,7 +1,5 @@
-import gym
 import numpy as np
 
-import gym_fishing.envs.base_fishing_env
 from gym_fishing.envs.base_fishing_env import BaseFishingEnv
 
 

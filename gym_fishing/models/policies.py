@@ -5,7 +5,7 @@ class msy:
     def __init__(self, env, **kwargs):
         self.env = env
         self.S = BMSY(env)
-        ## use the built-in method to determine MSY
+        # use the built-in method to determine MSY
         env.fish_population = self.S
         sigma = env.sigma
         env.sigma = 0
@@ -47,7 +47,7 @@ class user_action:
         return action, obs
 
 
-## Note, this resets the environment
+# Note, this resets the environment
 def BMSY(env):
     n = 10001  # ick should  be cts
     state_range = np.linspace(

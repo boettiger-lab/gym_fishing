@@ -39,7 +39,7 @@ class BaseFishingEnv(gym.Env):
         self.file = file
 
         # for render() method only
-        if file != None:
+        if file is not None:
             self.write_obj = open(file, "w+")
 
         # Initial state
@@ -94,7 +94,7 @@ class BaseFishingEnv(gym.Env):
         return csv_entry(self)
 
     def close(self):
-        if self.file != None:
+        if self.file is not None:
             self.write_obj.close()
 
     def simulate(env, model, reps=1):

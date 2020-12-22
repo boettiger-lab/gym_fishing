@@ -1,5 +1,3 @@
-import math
-
 import numpy as np
 
 from gym_fishing.envs.base_fishing_env import BaseFishingEnv

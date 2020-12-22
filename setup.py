@@ -17,7 +17,7 @@ setuptools.setup(
         "AI",
         "Artificial Intelligence",
     ],
-    packages=setuptools.find_packages(exclude=['docs', 'scripts', 'tests']),
+    packages=setuptools.find_packages(exclude=["docs", "scripts", "tests"]),
     install_requires=["gym", "numpy", "pandas", "matplotlib"],
     extras_require={
         "tests": [
@@ -46,8 +46,9 @@ setuptools.setup(
             "sphinx-autodoc-typehints",
         ],
     },
+    # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable"
     classifiers=[
-        "Development Status :: 3 - Alpha",  # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
