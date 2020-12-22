@@ -1,20 +1,15 @@
 
 from gym.envs.registration import register
-
-register(
-    id="fishing-v0",
-    entry_point="gym_fishing.envs.fishing_env:FishingEnv",
-)
-
+from gym_fishing.envs.fishing_cts_env import FishingCtsEnv
 
 register(
     id="fishing-v1",
-    entry_point="gym_fishing.envs.fishing_cts_env:FishingCtsEnv",
+    entry_point="gym_fishing.envs:FishingCtsEnv",
 )
 
 register(
     id="fishing-v2",
-    entry_point="gym_fishing.envs.fishing_tipping_env:FishingTippingEnv",
+    entry_point="gym_fishing.envs.:FishingTippingEnv",
 )
 
 register(
