@@ -13,8 +13,10 @@ def csv_entry(self):
 
 def df_entry_vec(df, env, rep, obs, action, reward, t):
     for i, e in enumerate(range(len(df.index), len(df.index)+env.num_envs)):
-        fish_population = env.env_method("get_fish_population", (obs[i],), indices=i)[0][0]
-        df.loc[e] = [t, fish_population, action[i][0], reward[i], (rep*env.num_envs) + i]
+        fish_population = env.env_method("get_fish_population", (obs[i],),\
+                                                           indices=i)[0][0]
+        df.loc[e] = [t, fish_population, action[i][0], reward[i], \
+                                            (rep*env.num_envs) + i]
 
 def simulate_mdp(env, model, reps=1):
     row = []
@@ -44,8 +46,9 @@ def simulate_mdp(env, model, reps=1):
     return df
 
 def simulate_mdp_vec(env, model, n_eval_episodes):
-    assert n_eval_episodes % env.num_envs == 0, "Error: number of evaluations needs to\
-                                  be divisible by the number of parallel environments"
+    assert n_eval_episodes % env.num_envs == 0, "Error: number of \
+                     evaluations needs to be divisible by the number \
+                     of parallel environments"
 
     # Since performed in parallel, need to account for number of envs
     reps = int(n_eval_episodes / env.num_envs)
