@@ -49,11 +49,9 @@ def simulate_mdp_vec(env, model, n_eval_episodes):
 
     # Since performed in parallel, need to account for number of envs
     reps = int(n_eval_episodes / env.num_envs)
-    df = pd.DataFrame(columns=['time', 'state', 'action', 'reward', 'rep'])
+    df = DataFrame(columns=['time', 'state', 'action', 'reward', 'rep'])
     for rep in range(reps):
         obs = env.reset()
-        quota = []
-        reward = []
         state = None
         done = [False for _ in range(env.num_envs)]
         action = [[env.action_space.low[0]] for _ in range(env.num_envs)]
